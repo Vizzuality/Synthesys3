@@ -47,12 +47,11 @@ for item in original_places:
 
 # Now geocode these data
 geo_points = {}  # a dictionary mapped to set of clean items (780 uniques)
-# overy query limit should go to badly_coded to be tried again in a repeated loop
 uncoded=100
-while uncoded is not 0.0:
+attempt = 0
+while len(geo_points) != len(set(clean_items)):  # unique locations (-1 is for nan loci)
     badly_coded = []
-    for site in tqdm(set(clean_items[0:10])):
-        #print(site)
+    for site in tqdm(set(clean_items)):
         if site not in geo_points:
             attempts = 0
             sucsess = False
@@ -71,14 +70,15 @@ while uncoded is not 0.0:
                     time.sleep(3) # if we hit Q limit, have a break for a few secs...
             coordinates = r.get('geometry',{}).get('coordinates', False)
             if coordinates:
-                lat_lng = (r.get('properties').get('lat'), r.get('properties').get('lng'))
-                p = Point(lat_lng)
+                #lat_lng = (r.get('properties').get('lat'), r.get('properties').get('lng'))
+                #p = Point(lat_lng)
+                p = Point(coordinates)
                 geo_points[site]=p
             else:
                 badly_coded.append(site)
-    uncoded=len(badly_coded)/len(set(clean_items)) * 100
-    print(f"uncoded={uncoded}%")
-print(f"finished geocoding process")
+    #uncoded=len(badly_coded)
+    attempt += 1
+    print(f"uncoded={uncoded}")
 
 # Next we need to identify the COUNTRY ISO and ADMIN1 CODE for each geolocation
 # based on gadm28_admin1 shapefile.
@@ -109,6 +109,11 @@ cnames = ['home_institute','gender','researcher_status', 'start_year',
           'discipline','visit_days','funding_round','inst_short_name']
 
 gdf = gpd.GeoDataFrame(table_subset, columns=cnames,
-                 geometry=geocoded_list, crs='EPSG:4326')
+                 geometry=geocoded_list,
+                 crs={'proj':'longlat', 'ellps':'WGS84', 'datum':'WGS84'})
+
+# Remove the ~150 unlocated entries (no affiliation)
+nilmask = df['home_insti'] != "nil"
+gdf = gdf[nilmask]
 
 gdf.to_file('./sanitized_data.shp', driver='ESRI Shapefile')
