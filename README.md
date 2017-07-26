@@ -1,3 +1,4 @@
-## Main Project Dev folder
+# SYNTHESYS3 project development resources
 
-* Currently contains notebook related to data cleaning procedure
+Example queries required to develop the synthesis site can be found in markdown file.
+[View notebook](http://nbviewer.jupyter.org/github/Vizzuality/Synthesys3/blob/master/query_examples.ipynb) of choropleth queries.
