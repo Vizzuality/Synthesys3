@@ -1,5 +1,11 @@
-# SYNTHESYS3 project development resources
+!['Vizuality'](./Data/viz_badge.png)
 
-Example queries required to develop the synthesis site can be found in markdown file.
+# SYNTHESYS3 dev resources
 
-[View notebook](http://nbviewer.jupyter.org/github/Vizzuality/Synthesys3/blob/master/query_examples.ipynb) of choropleth queries.
+This repo contains the development resources for the SYNTHESYS3 project.
+
+* [Basecamp project thread](https://basecamp.com/1756858/projects/14117670)
+
+* [Invision project wireframes](https://projects.invisionapp.com/share/5HCNPF4ZA#/screens/244523222_Home)
+
+* [Example data queries and backend resources ](http://nbviewer.jupyter.org/github/Vizzuality/Synthesys3/blob/master/query_examples.ipynb)
