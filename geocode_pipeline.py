@@ -47,9 +47,8 @@ for item in original_places:
 
 # Now geocode these data
 geo_points = {}  # a dictionary mapped to set of clean items (780 uniques)
-uncoded=100
 attempt = 0
-while len(geo_points) != len(set(clean_items)):  # unique locations (-1 is for nan loci)
+while len(geo_points) < len(set(clean_items)):  # unique locations (-1 is for nan loci)
     badly_coded = []
     for site in tqdm(set(clean_items)):
         if site not in geo_points:
@@ -76,44 +75,46 @@ while len(geo_points) != len(set(clean_items)):  # unique locations (-1 is for n
                 geo_points[site]=p
             else:
                 badly_coded.append(site)
-    #uncoded=len(badly_coded)
     attempt += 1
-    print(f"uncoded={uncoded}")
+    print(f"badly coded={len(badly_coded)}")
 
 # Next we need to identify the COUNTRY ISO and ADMIN1 CODE for each geolocation
 # based on gadm28_admin1 shapefile.
 # be careful to handle the nil/nan entries.
 
-# expand the lists out to full lenght and add to a geopandas df
-geocoded_list = []
-for item in clean_items:
-    geocoded_list.append(geo_points[item])
-assert len(geocoded_list) == len(df), "Geocoded list was not eq. in size to df"
 
-# Extract a subset from the original df and add in the good institute names
 table_subset = []
 for n, row in enumerate(df.iterrows()):
-    gender = row[1][3]
     home_inst = clean_items[n]
-    researcher_status = row[1][4]
-    funding_round = row[1][26]
-    start_year = row[1][14]
-    visit_days = row[1][18]
-    discipline = row[1][10]
-    inst_short_name = row[1][24]
-    table_subset.append([home_inst, gender, researcher_status, start_year,
-                         discipline, visit_days, funding_round, inst_short_name])
+    if home_inst != 'nil':  # Dont code the home institute
+        gender = row[1][3]
+        researcher_status = row[1][4]
+        funding_round = row[1][26]
+        start_year = row[1][14]
+        visit_days = row[1][18]
+        discipline = row[1][10]
+        synth_round = row[1][26]
+        inst_short_name = row[1][24]
+        table_subset.append([home_inst, gender, researcher_status, start_year, discipline,
+                             visit_days, funding_round, inst_short_name, synth_round])
+        
+tmp_frame = pd.DataFrame(table_subset,columns=['home_institute','gender','researcher_status', 'start_year',
+                                       'discipline','visit_days','funding_round','inst_short_name','synth_round'])
 
-# Finally convert these to a geopandas dataframe and export as a shapefile
-cnames = ['home_institute','gender','researcher_status', 'start_year',
-          'discipline','visit_days','funding_round','inst_short_name']
+glist = []
+for place in tmp_frame['home_institute'].values:
+    if place in geo_points:
+        glist.append(geo_points[place])
+    else:
+        print(f"ERROR: not found {place}")
 
-gdf = gpd.GeoDataFrame(table_subset, columns=cnames,
-                 geometry=geocoded_list,
-                 crs={'proj':'longlat', 'ellps':'WGS84', 'datum':'WGS84'})
+# table_subset
+gdf = gpd.GeoDataFrame(tmp_frame,columns=['home_institute','gender','researcher_status', 'start_year',
+                                       'discipline','visit_days','funding_round','inst_short_name','synth_round'],
+                 geometry=glist, crs={'proj':'longlat', 'ellps':'WGS84', 'datum':'WGS84'})
+        
 
-# Remove the ~150 unlocated entries (no affiliation)
-nilmask = df['home_insti'] != "nil"
+nilmask = gdf['home_institute'] != "nil"
 gdf = gdf[nilmask]
 
 gdf.to_file('./sanitized_data.shp', driver='ESRI Shapefile')
