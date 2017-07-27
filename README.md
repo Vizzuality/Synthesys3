@@ -8,4 +8,6 @@ This repo contains the development resources for the SYNTHESYS3 project.
 
 * [Invision project wireframes](https://projects.invisionapp.com/share/5HCNPF4ZA#/screens/244523222_Home)
 
-* [Example data queries and backend resources ](http://nbviewer.jupyter.org/github/Vizzuality/Synthesys3/blob/master/query_examples.ipynb)
+* [Example data queries and backend resources](http://nbviewer.jupyter.org/github/Vizzuality/Synthesys3/blob/master/query_examples.ipynb)
+
+* [Carto synthesys account](https://synthesys.carto.com/me)
