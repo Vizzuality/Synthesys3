@@ -1,0 +1,11 @@
+{
+  "name": "Synthesis3",
+  "version": "1.0.0",
+  "description": "Synthesis3",
+  "scripts": {
+    "start": "harp server --port $PORT"
+  },
+  "dependencies": {
+    "harp": "*"
+  }
+}
