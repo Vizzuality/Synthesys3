@@ -1,53 +1,7 @@
-var filtersData = {
-  discipline: [
-    {
-      label: 'Earth Sciences & Environment',
-      value: 'Earth Sciences & Environment'
-    },
-    {
-      label: 'Engineering & Technology',
-      value: 'Engineering & Technology'
-    },
-    {
-      label: 'Humanities',
-      value: 'Humanities'
-    },
-    {
-      label: 'Information & Communication Technologies',
-      value: 'Information & Communication Technologies'
-    },
-    {
-      label: 'Life Sciences & Biotech',
-      value: 'Life Sciences & Biotech'
-    },
-    {
-      label: 'Material Sciences',
-      value: 'Material Sciences'
-    },
-    {
-      label: 'Physics',
-      value: 'Physics'
-    },
-    {
-      label: 'Social Sciences',
-      value: 'Social Sciences'
-    }
-  ],
-  'founding-round': [
-    {
-      label: 'R1',
-      value: 'R1'
-    },
-    {
-      label: 'R2',
-      value: 'R2'
-    },
-    {
-      label: 'R2',
-      value: 'R2'
-    }
-  ]
-
+var FILTERS = {
+  discipline: null,
+  founding_round: null,
+  country: null
 };
 
 jQuery(function () {
@@ -1101,26 +1055,41 @@ function initCustomForms() {
   jcf.replaceAll();
 }
 
+function updateFilter(item) {
+  var el = $(item.currentTarget);
+  var type = el.data('filter-type');
+  var data = el.data('value');
+  var label = el.html();
+  if (!data) {
+    data = item.currentTarget.value;
+  }
+  $('*[data-filter-value="'+ type +'"]').html(label);
+  FILTERS[type] = data;
+};
+
 function setFilters() {
   var filters = Array.prototype.slice.call($('.js-filter'));
   filters.forEach(function (filter) {
     var type = $(filter).data('filter-type');
-    var data = filtersData[type];
+    var data = FILTERS_DATA[type];
     if (data) {
-      data.forEach(function(item) {
-        var option = _.template('<option value="<%= value %>"> <%= label %> </option>')(item);
+      data.forEach(function(item, i) {
+        var opts = Object.assign({}, item, { type: type });
+        var optionEl;
+        if (type !== 'country') {
+          optionEl = _.template('<option value="<%= value %>"> <%= label %> </option>')(opts);
+        } else {
+          optionEl = _.template('<li data-filter-type="<%= type %>" data-value="<%= value %>"> <%= label %> </li>')(opts);
+        }
+        $(filter).append(optionEl);
+        $(filter.children[i]).click(updateFilter);
 
-        $(filter).append(option);
       })
     }
-    $(filter).change(function (item) {
-      updateFilters(type, item.currentTarget.value)
-    }.bind(this));
+    if (type !== 'country') {
+      $(filter).change(updateFilter);
+    }
   });
-}
-
-function updateFilters(filter, value) {
-  console.log(filter, value);
 }
 
 /*

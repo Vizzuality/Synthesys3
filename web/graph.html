@@ -22,6 +22,7 @@
   <script src="https://code.highcharts.com/modules/treemap.js" defer></script>
   <script src="https://d3js.org/d3.v3.min.js" defer></script>
   <!-- include custom JavaScript -->
+  <script src="js/filters-data.js" defer></script>
   <script src="js/jquery.main.js" defer></script>
 </head>
 <body>
@@ -79,12 +80,12 @@
             <li><a href="#" class="all"><span>All</span></a></li>
             <li>
               <div class="autocomplete">
-                <a href="#" class="opener"><span>Select a Country</span></a>
+                <a href="#" class="opener"><span data-filter-value="country">Select a Country</span></a>
                 <div class="drop">
                   <div class="input">
                     <input type="search" placeholder="Search...">
                   </div>
-                  <ul class="list">
+                  <ul class="list js-filter" data-filter-type="country">
                   </ul>
                   <div class="btn-holder">
                     <a href="#" class="cancel btn-primary">Cancel</a>
@@ -99,7 +100,7 @@
               </select>
             </li>
             <li>
-              <select class="js-filter" data-filter-type="founding-round">
+              <select class="js-filter" data-filter-type="founding_round">
                 <option class="hide">Select a Founding Round</option>
               </select>
             </li>
