@@ -6,6 +6,7 @@ var FILTERS = {
 
 jQuery(function () {
   setFilters();
+  setCountrySearch();
   initSlickCarousel();
   initMobileNav();
   initHighcharts();
@@ -1067,6 +1068,8 @@ function initCustomForms() {
 }
 
 function updateFilter(e) {
+  e.preventDefault();
+  e.stopPropagation();
   var el = $(e.currentTarget);
   var type = el.data('filter-type');
   var data = el.data('value');
@@ -1099,27 +1102,44 @@ function setFilters() {
   filters.forEach(function (filter) {
     var type = $(filter).data('filter-type');
     var data = FILTERS_DATA[type];
-    if (data) {
-      data.forEach(function(item, i) {
-        var opts = Object.assign({}, item, { type: type });
-        var optionEl;
-        if (type !== 'country') {
-          optionEl = _.template('<option value="<%= value %>"> <%= label %> </option>')(opts);
-        } else {
-          optionEl = _.template('<li data-filter-type="<%= type %>" data-value="<%= value %>"><a><%= label %></a></li>')(opts);
-        }
-        $(filter).append(optionEl);
-
-        if (type === 'country') {
-          $(filter.children[i]).click(updateFilter);
-        }
-
-      });
-      $(filter.children[0]).click(updateFilter);
-    }
     if (type !== 'country') {
-      $(filter).change(updateFilter);
+      setFilter(filter, data);
+    } else {
+      setCountryFilter(filter, data);
     }
   });
   $('.js-filter-restore').click(restoreFilters);
+}
+
+function setFilter(filter, data) {
+  if (!data) return;
+  data.forEach(function(item) {
+    var optionEl = _.template('<option value="<%= value %>"> <%= label %> </option>')(item);
+    $(filter).append(optionEl);
+  });
+  $(filter.children[0]).click(updateFilter);
+    $(filter).change(updateFilter);
+}
+
+function setCountryFilter(filter, data) {
+  if (!data) return;
+  data.forEach(function(item, i) {
+    var optionEl = _.template('<li data-filter-type="country" data-value="<%= value %>"><a><%= label %></a></li>')(item);
+    $(filter).append(optionEl);
+    $(filter.children[i]).click(updateFilter);
+  });
+  $(filter.children[0]).click(updateFilter);
+}
+
+function setCountrySearch() {
+  $('.js-country-search').on('input', _.debounce(function (e) {
+    const value = e.currentTarget.value.toUpperCase();
+    const data = FILTERS_DATA['country'].filter(function (item) {
+      return item.label.toUpperCase().indexOf(value) > -1;
+    });
+    data.unshift({ value: '', label: 'Select a Country'});
+    var countryFilter = $('*[data-filter-type="country"]');
+    countryFilter.html('');
+    setCountryFilter(countryFilter[0], data);
+  }, 700))
 }
