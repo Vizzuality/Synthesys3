@@ -1,7 +1,7 @@
 var FILTERS = {
-  discipline: null,
-  founding_round: null,
-  country: null
+  discipline: '',
+  founding_round: '',
+  country: ''
 };
 
 jQuery(function () {
@@ -1066,19 +1066,33 @@ function initCustomForms() {
   jcf.replaceAll();
 }
 
-function updateFilter(item) {
-  var el = $(item.currentTarget);
+function updateFilter(e) {
+  var el = $(e.currentTarget);
   var type = el.data('filter-type');
   var data = el.data('value');
   var label = el.find('a').html();
-  if (!data) {
-    data = item.currentTarget.value;
+  if (typeof data === 'undefined') {
+    data = e.currentTarget.value;
   }
   $('*[data-filter-value="'+ type +'"]').html(label);
   el.closest('.autocomplete, .auto-active').removeClass('auto-active');
   FILTERS[type] = data;
   initHighcharts();
 };
+
+function restoreFilters() {
+  var filters = Array.prototype.slice.call($('.js-filter'));
+  filters.forEach(function (filter) {
+    var type = $(filter).data('filter-type');
+    if (FILTERS[type]) {
+      if (type !== 'country') {
+        $(filter).val('').trigger('change');
+      } else {
+        filter.children[0].click();
+      }
+    }
+  })
+}
 
 function setFilters() {
   var filters = Array.prototype.slice.call($('.js-filter'));
@@ -1100,10 +1114,12 @@ function setFilters() {
           $(filter.children[i]).click(updateFilter);
         }
 
-      })
+      });
+      $(filter.children[0]).click(updateFilter);
     }
     if (type !== 'country') {
       $(filter).change(updateFilter);
     }
   });
+  $('.js-filter-restore').click(restoreFilters);
 }

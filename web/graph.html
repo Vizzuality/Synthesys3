@@ -78,7 +78,7 @@
         <a href="#" class="filter-by"><span class="open">Filter by</span><span class="close">Overview</span></a>
         <div class="filter-holder">
           <ul class="filter-list">
-            <li><a href="#" class="all"><span>All</span></a></li>
+            <li><a href="#" class="all js-filter-restore"><span>All</span></a></li>
             <li>
               <div class="autocomplete">
                 <a href="#" class="opener"><span data-filter-value="country">Select a Country</span></a>
@@ -87,6 +87,7 @@
                     <input type="search" placeholder="Search...">
                   </div>
                   <ul class="list js-filter" data-filter-type="country">
+                    <li data-filter-type="country" data-value=""><a>Select a Country</a></li>
                   </ul>
                   <div class="btn-holder">
                     <a href="#" class="cancel btn-primary">Cancel</a>
@@ -97,12 +98,12 @@
             </li>
             <li>
               <select class="js-filter" data-filter-type="discipline">
-                <option class="hide">Select a Discipline</option>
+                <option value="">Select a Discipline</option>
               </select>
             </li>
             <li>
               <select class="js-filter" data-filter-type="founding_round">
-                <option class="hide">Select a Founding Round</option>
+                <option value="">Select a Founding Round</option>
               </select>
             </li>
           </ul>
