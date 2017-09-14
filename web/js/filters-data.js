@@ -33,7 +33,7 @@ var FILTERS_DATA = {
       value: 'Social Sciences'
     }
   ],
-  founding_round: [
+  funding_round: [
     {
       label: 'SYNTHESYS (2004 - 2009)',
       value: 'R1'

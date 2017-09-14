@@ -2,7 +2,7 @@ $ = jQuery;
 
 var FILTERS = {
   discipline: '',
-  founding_round: '',
+  funding_round: '',
   country: ''
 };
 
