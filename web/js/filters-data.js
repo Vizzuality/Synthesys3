@@ -35,15 +35,15 @@ var FILTERS_DATA = {
   ],
   founding_round: [
     {
-      label: 'R1',
+      label: 'SYNTHESYS (2004 - 2009)',
       value: 'R1'
     },
     {
-      label: 'R2',
+      label: 'SYNTHESYS2 (2009 - 2013)',
       value: 'R2'
     },
     {
-      label: 'R3',
+      label: 'SYNTHESYS3 (2013 - 2017)',
       value: 'R3'
     }
   ],

@@ -1,3 +1,5 @@
+$ = jQuery;
+
 var FILTERS = {
   discipline: '',
   founding_round: '',
@@ -15,8 +17,6 @@ jQuery(function () {
   initBubbleChart();
   initTreeChart();
 });
-
-$ = jQuery;
 
 function initTreeChart() {
   var treeData = {
