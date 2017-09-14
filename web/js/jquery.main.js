@@ -1,5 +1,6 @@
 $ = jQuery;
 
+var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
 var FILTERS = {
   discipline: '',
   funding_round: '',
@@ -445,93 +446,103 @@ function initBubbleChart() {
 
 function initHighcharts() {
   jQuery('.pie-chart').each(function () {
-    Highcharts.chart({
-      chart: {
-        renderTo: this,
-        plotBackgroundColor: null,
-        plotBorderWidth: 0,
-        plotShadow: false,
-        height: 280
-      },
-      title: {
-        text: ''
-      },
-      tooltip: {
-        pointFormat: '{point.percentage:.1f}%',
-        style: {
-          'text-transform': 'uppercase'
-        }
-      },
-      plotOptions: {
-        pie: {
-          dataLabels: {
-            enabled: false
-          },
-          startAngle: 0,
-          endAngle: 360,
-          center: ['50%', '50%'],
-          showInLegend: true,
-          borderWidth: 0,
-          size: 257
-        }
-      },
-      legend: {
-        align: 'left',
-        verticalAlign: 'top',
-        layout: 'vertical',
-        x: -5,
-        y: -2,
-        symbolWidth: 18,
-        symbolHeight: 5,
-        symbolPadding: 13,
-        symbolRadius: 4,
-        itemMarginBottom: 11,
-        squareSymbol: false,
-        floating: true,
-        itemStyle: {
-          'color': '#000016',
-          'cursor': 'pointer',
-          'fontSize': '13px',
-          'fontWeight': 'normal',
-          'textOverflow': 'ellipsis',
-          'text-transform': 'uppercase'
-        }
-      },
-      series: [{
-        type: 'pie',
-        innerSize: '43%',
-        data: [
-          {
-            name: 'woman',
-            y: 60,
-            color: '#13339b'
-          },
-          {
-            name: 'man',
-            y: 40,
-            color: '#51e5b4'
+    var query;
+    var params = prefixFiltersForQuery(['WHERE discipline like', 'AND funding_ro like']);
+    if (FILTERS.iso2) {
+      query = genderCountryPieChartQuery(params).trim();
+    } else {
+      query = genderPieChartQuery(params).trim();
+    }
+    $.getJSON(BASE_URL, { q: query }, function(data) {
+      var apiData = parseGenderPieChartData(data);
+      Highcharts.chart({
+        chart: {
+          renderTo: this,
+          plotBackgroundColor: null,
+          plotBorderWidth: 0,
+          plotShadow: false,
+          height: 280
+        },
+        title: {
+          text: ''
+        },
+        tooltip: {
+          pointFormat: '{point.percentage:.1f}%',
+          style: {
+            'text-transform': 'uppercase'
           }
-        ]
-      }],
-      responsive: {
-        rules: [{
-          condition: {
-            maxWidth: 450
-          },
-          chartOptions: {
-            chart: {
-              height: 349
+        },
+        plotOptions: {
+          pie: {
+            dataLabels: {
+              enabled: false
             },
-            plotOptions: {
-              pie: {
-                size: 213,
-                center: ['50%', '57%']
+            startAngle: 0,
+            endAngle: 360,
+            center: ['50%', '50%'],
+            showInLegend: true,
+            borderWidth: 0,
+            size: 257
+          }
+        },
+        legend: {
+          align: 'left',
+          verticalAlign: 'top',
+          layout: 'vertical',
+          x: -5,
+          y: -2,
+          symbolWidth: 18,
+          symbolHeight: 5,
+          symbolPadding: 13,
+          symbolRadius: 4,
+          itemMarginBottom: 11,
+          squareSymbol: false,
+          floating: true,
+          itemStyle: {
+            'color': '#000016',
+            'cursor': 'pointer',
+            'fontSize': '13px',
+            'fontWeight': 'normal',
+            'textOverflow': 'ellipsis',
+            'text-transform': 'uppercase'
+          }
+        },
+        series: [{
+          type: 'pie',
+          innerSize: '43%',
+          data: [
+            {
+              name: 'woman',
+              y: apiData.female,
+              color: '#13339b'
+            },
+            {
+              name: 'man',
+              y: apiData.male,
+              color: '#51e5b4'
+            }
+          ]
+        }],
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 450
+            },
+            chartOptions: {
+              chart: {
+                height: 349
+              },
+              plotOptions: {
+                pie: {
+                  size: 213,
+                  center: ['50%', '57%']
+                }
               }
-            },
-          }
-        }]
-      }
-    });
+            }
+          }]
+        }
+      });
+    }.bind(this));
   });
   jQuery('.line-chart').each(function () {
     var holder = jQuery(this);
@@ -1083,6 +1094,9 @@ function updateFilter(e) {
   if (type === 'country') {
     FILTERS.iso = data;
     FILTERS.iso2 = ISO_TO_ISO2[data];
+    $('.js-country-filter-dependent').each(function () {
+      this.textContent = label;
+    });
   } else {
     FILTERS[type] = data;
   }
@@ -1150,3 +1164,23 @@ function setCountrySearch() {
     setCountryFilter(countryFilter[0], data);
   }, 700))
 }
+
+function prefixFiltersForQuery(prefixes) {
+  return Object.assign({}, FILTERS, {
+    discipline: FILTERS.discipline && prefixes[0] + ' \'' + FILTERS.discipline + '\'',
+    funding_round: FILTERS.funding_round && prefixes[1] + ' \'' + FILTERS.funding_round + '\''
+  });
+}
+
+function parseGenderPieChartData(res) {
+  return res.rows
+    .map(function (row) {
+      var obj = {};
+      obj[row.gender] = row.count;
+      return obj;
+    })
+    .reduce(function (acc, next) {
+      if (next.F) return Object.assign({}, acc, { female: next.F });
+      if (next.M) return Object.assign({}, acc, { male: next.M });
+    }, {});
+};
