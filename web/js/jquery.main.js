@@ -3,7 +3,8 @@ $ = jQuery;
 var FILTERS = {
   discipline: '',
   funding_round: '',
-  country: ''
+  iso: '',
+  iso2: ''
 };
 
 jQuery(function () {
@@ -1079,7 +1080,13 @@ function updateFilter(e) {
   }
   $('*[data-filter-value="'+ type +'"]').html(label);
   el.closest('.autocomplete, .auto-active').removeClass('auto-active');
-  FILTERS[type] = data;
+  if (type === 'country') {
+    FILTERS.iso = data;
+    FILTERS.iso2 = ISO_TO_ISO2[data];
+  } else {
+    FILTERS[type] = data;
+  }
+
   initHighcharts();
 };
 
