@@ -822,7 +822,7 @@ function initHighcharts() {
       },
       tooltip: {
         headerFormat: '',
-        pointFormat: 'Papes per {point.name}: <b>{point.y}</b>'
+        pointFormat: 'Papers per {point.name}: <b>{point.y}</b>'
       },
       series: [{
         name: 'Population',
@@ -873,164 +873,119 @@ function initHighcharts() {
   });
   jQuery('.treemap-chart').each(function () {
     var holder = jQuery(this);
-    Highcharts.chart({
-      chart: {
-        renderTo: this,
-        height: 346
-      },
-      title: {
-        text: ''
-      },
-      plotOptions: {
-        treemap: {
-          joinBy: ['colorValue', 'value']
-        }
-      },
-      tooltip: {
-        valueSuffix: 'k'
-      },
-      colorAxis: {
-        dataClasses: [{
-          to: 20,
-          color: '#1d388f'
-        }, {
-          from: 21,
-          to: 40,
-          color: '#5d77cd'
-        }, {
-          from: 41,
-          to: 80,
-          color: '#a0b4f7'
-        }, {
-          from: 81,
-          to: 120,
-          color: '#51e5b4'
-        }, {
-          from: 121,
-          to: 160,
-          color: '#1fbb88'
-        }, {
-          from: 200,
-          color: '#077551'
-        }]
-      },
-      legend: {
-        itemStyle: {
-          "color": "#fff",
-          "cursor": "pointer",
-          "fontSize": "13px",
-          "lineHeight": "16px",
-          "fontWeight": "bold",
-          "textOverflow": "ellipsis"
+    var query;
+    var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
+    if (FILTERS.iso2) {
+      query = institutesVisitedCountryTreeChartQuery(params).trim();
+    } else {
+      query = institutesVisitedTreeChartQuery(params).trim();
+    }
+    $.getJSON(BASE_URL, { q: query }, function(data) {
+      var apiData = parseInstitutesVisitedTreeChartData(data);
+
+      Highcharts.chart({
+        chart: {
+          renderTo: this,
+          height: 346
         },
-        margin: 8,
-        padding: 0,
-        itemMarginBottom: 17,
-        itemDistance: 0,
-        itemWidth: 1,
-        symbolHeight: 1,
-        symbolRadius: 0,
-        symbolWidth: 1,
-        squareSymbol: false,
-        useHTML: true,
-        navigation: {
-          enabled: false,
+        title: {
+          text: ''
         },
-        labelFormatter: function () {
-          if (!this.from) {
-            return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + 'k</span>';
+        plotOptions: {
+          treemap: {
+            joinBy: ['colorValue', 'value']
           }
-          if (!this.to) {
-            return '<span class="legend-item" style="background-color:' + this.color + '">' + this.from + 'k</span>';
-          }
-          return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + 'k</span>';
         },
-        align: 'left'
-      },
-      series: [{
-        type: 'treemap',
-        layoutAlgorithm: 'squarified',
-        dataLabels: {
-          enabled: false
+        tooltip: {
+          valueSuffix: 'k'
         },
-        data: [{
-          name: 'A',
-          value: 15,
-          colorValue: 15
-        }, {
-          name: 'B',
-          value: 40,
-          colorValue: 60
-        }, {
-          name: 'C',
-          value: 60,
-          colorValue: 80
-        }, {
-          name: 'D',
-          value: 80,
-          colorValue: 80
-        }, {
-          name: 'E',
-          value: 100,
-          colorValue: 100
-        }, {
-          name: 'F',
-          value: 120,
-          colorValue: 120
-        }, {
-          name: 'G',
-          value: 160,
-          colorValue: 160
-        }, {
-          name: 'H',
-          value: 160,
-          colorValue: 160
-        }, {
-          name: 'I',
-          value: 200,
-          colorValue: 200
-        }, {
-          name: 'J',
-          value: 20,
-          colorValue: 20
-        }, {
-          name: 'K',
-          value: 40,
-          colorValue: 40
-        }, {
-          name: 'L',
-          value: 60,
-          colorValue: 60
-        }, {
-          name: 'M',
-          value: 80,
-          colorValue: 80
-        }, {
-          name: 'N',
-          value: 100,
-          colorValue: 100
-        }]
-      }],
-      responsive: {
-        rules: [{
-          condition: {
-            maxWidth: 450
+        colorAxis: {
+          dataClasses: [{
+            to: 20,
+            color: '#1d388f'
+          }, {
+            from: 21,
+            to: 40,
+            color: '#5d77cd'
+          }, {
+            from: 41,
+            to: 80,
+            color: '#a0b4f7'
+          }, {
+            from: 81,
+            to: 120,
+            color: '#51e5b4'
+          }, {
+            from: 121,
+            to: 160,
+            color: '#1fbb88'
+          }, {
+            from: 200,
+            color: '#077551'
+          }]
+        },
+        legend: {
+          itemStyle: {
+            "color": "#fff",
+            "cursor": "pointer",
+            "fontSize": "13px",
+            "lineHeight": "16px",
+            "fontWeight": "bold",
+            "textOverflow": "ellipsis"
           },
-          chartOptions: {
-            chart: {
-              height: 154
-            },
-            legend: {
-              enabled: false
+          margin: 8,
+          padding: 0,
+          itemMarginBottom: 17,
+          itemDistance: 0,
+          itemWidth: 1,
+          symbolHeight: 1,
+          symbolRadius: 0,
+          symbolWidth: 1,
+          squareSymbol: false,
+          useHTML: true,
+          navigation: {
+            enabled: false,
+          },
+          labelFormatter: function () {
+            if (!this.from) {
+              return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + 'k</span>';
             }
-          }
-        }]
-      }
-    }, function (chart) {
-      if (chart.legend.box) {
-        jQuery(chart.legend.box.parentGroup.div).css('top', chart.clipBox.height + 15);
-      }
-    });
+            if (!this.to) {
+              return '<span class="legend-item" style="background-color:' + this.color + '">' + this.from + 'k</span>';
+            }
+            return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + 'k</span>';
+          },
+          align: 'left'
+        },
+        series: [{
+          type: 'treemap',
+          layoutAlgorithm: 'squarified',
+          dataLabels: {
+            enabled: false
+          },
+          data: apiData.institutesCount
+        }],
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 450
+            },
+            chartOptions: {
+              chart: {
+                height: 154
+              },
+              legend: {
+                enabled: false
+              }
+            }
+          }]
+        }
+      }, function (chart) {
+        if (chart.legend.box) {
+          jQuery(chart.legend.box.parentGroup.div).css('top', chart.clipBox.height + 15);
+        }
+      });
+    }.bind(this));
   });
 }
 
@@ -1213,4 +1168,17 @@ function parseResearchersLineChartData(res) {
     yearStart: res.rows[0] ? res.rows[0].year : [],
     yearCount: res.rows.map(function (row) { return row.count; })
   };
+}
+
+function parseInstitutesVisitedTreeChartData(res) {
+  var apiData = {};
+  apiData.institutesCount = res.rows.map(function (row) {
+    return {
+      name: INSTITUTES[row.institute_id],
+      value: row.count,
+      colorValue: row.count
+    };
+  });
+
+  return apiData;
 }
