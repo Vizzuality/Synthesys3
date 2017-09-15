@@ -1,4 +1,5 @@
-$ = jQuery;
+"use strict";
+var $ = jQuery;
 
 var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
 var FILTERS = {
@@ -200,7 +201,7 @@ function initTreeChart() {
           }
         });
         svg.attr("height", maxHeight + 50);
-        xOffset = nodeEnter[0][0].getBBox().width * 1.5;
+        var xOffset = nodeEnter[0][0].getBBox().width * 1.5;
         g.attr("transform", "translate(" + xOffset + ", 0)");
         link.attr("d", diagonal);
         nodeEnter.attr("transform", function (d) {
@@ -369,7 +370,7 @@ function initBubbleChart() {
           return drawText(d.value);
         });
       if (isIE) {
-        function addEvents(self) {
+        var addEvents = function addEvents(self) {
           jQuery(self).off('mouseenter').on('mouseenter', function () {
             d3.select(self).select("circle")
               .attr("class", "selected_circle");
@@ -1075,7 +1076,7 @@ function restoreFilters() {
   var filters = Array.prototype.slice.call($('.js-filter'));
   filters.forEach(function (filter) {
     var type = $(filter).data('filter-type');
-    if (FILTERS[type]) {
+    if (FILTERS[type] || (FILTERS.iso && type === 'country')) {
       if (type !== 'country') {
         $(filter).val('').trigger('change');
       } else {
