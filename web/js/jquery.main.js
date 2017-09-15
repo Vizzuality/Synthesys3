@@ -10,16 +10,23 @@ var FILTERS = {
 };
 
 jQuery(function () {
+  init();
+  render();
+});
+
+function init() {
   setFilters();
   setCountrySearch();
   initSlickCarousel();
   initMobileNav();
-  initHighcharts();
   initCarousel();
   initCustomForms();
+}
+function render() {
+  initHighcharts();
   initBubbleChart();
   initSankeyChart();
-});
+}
 
 function initSankeyChart() {
   var treeData = {
@@ -99,6 +106,7 @@ function initSankeyChart() {
         "level": "#7e8fc8"
       }]
   };
+
   jQuery('.tree-chart').each(function () {
     var chartsHolder = jQuery(this);
 
@@ -213,27 +221,6 @@ function initSankeyChart() {
       }
     }
 
-    ResponsiveHelper.addRange({
-      '768..': {
-        on: function () {
-          drawChart(treeData, {
-            textWidth: 200,
-            varticalSpacing: 79,
-            leftOffset: 18
-          });
-        }
-      },
-      '..767': {
-        on: function () {
-          drawChart(mobileTreeDataObj, {
-            textWidth: 90,
-            varticalSpacing: 70,
-            leftOffset: 12
-          });
-        }
-      }
-    });
-
     function wrap(text, width, leftOffset) {
       text.each(function () {
         var text = d3.select(this),
@@ -266,6 +253,32 @@ function initSankeyChart() {
         }
       });
     }
+
+    var query = researchersSankeyChartQuery(FILTERS).trim();
+
+    $.getJSON(BASE_URL, { q: query }, function(data) {
+      var apiData = parseResearchersSankeyChartData(data);
+      ResponsiveHelper.addRange({
+        '768..': {
+          on: function () {
+            drawChart(apiData.tree, {
+              textWidth: 200,
+              varticalSpacing: 79,
+              leftOffset: 18
+            });
+          }
+        },
+        '..767': {
+          on: function () {
+            drawChart(apiData.tree, {
+              textWidth: 90,
+              varticalSpacing: 70,
+              leftOffset: 12
+            });
+          }
+        }
+      });
+    }.bind(this));
   });
 }
 
@@ -1072,7 +1085,7 @@ function updateFilter(e) {
     FILTERS[type] = data;
   }
 
-  initHighcharts();
+  render();
 };
 
 function restoreFilters() {
@@ -1185,4 +1198,30 @@ function parseInstitutesVisitedTreeChartData(res) {
   });
 
   return apiData;
+}
+
+function parseResearchersSankeyChartData(res) {
+  debugger;
+  var rootColor = '#09112d';
+  var linkColor = '#7e8fc8';
+  var selectedCountry = FILTERS_DATA.country.find(function (country) {
+    return country.value === FILTERS.iso
+  });
+  var instituteLinks = res.rows.map(function (row) {
+    return {
+      name: INSTITUTES[row.inst_id],
+      parent: selectedCountry,
+      value: row.counts,
+      level: linkColor
+    };
+  });
+
+  var root = {
+    name: selectedCountry && selectedCountry.label,
+    parent: "null",
+    level: rootColor,
+    value: 0,
+    children: instituteLinks
+  };
+  return { tree: root };
 }

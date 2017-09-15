@@ -127,6 +127,12 @@ var dynamicSenteceQuery = _.template('SELECT COUNT(DISTINCT(synthesys.home_insti
   ' <%= funding_round %>'
 );
 
-// TODO Sankey
+var researchersSankeyChartQuery = _.template('with gadm28 as (SELECT the_geom_webmercator, iso, name_1 FROM  gadm28_adm1 WHERE iso = \'<%= iso %>\')' +
+  ' SELECT gadm28.name_1, COUNT(synthesys.home_insti) as counts, synthesys.inst_id' +
+  ' FROM  sanitized_data as synthesys, gadm28' +
+  ' where ST_Intersects(  gadm28.the_geom_webmercator, synthesys.the_geom_webmercator)' +
+  ' GROUP BY gadm28.name_1, inst_id' +
+  ' ORDER BY inst_id'
+);
 
 // TODO Publication Tables
