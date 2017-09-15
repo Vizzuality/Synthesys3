@@ -446,11 +446,12 @@ function initBubbleChart() {
 
 function initHighcharts() {
   jQuery('.pie-chart').each(function () {
-    var query;
-    var params = prefixFiltersForQuery(['WHERE discipline like', 'AND funding_ro like']);
+    var query, params;
     if (FILTERS.iso2) {
+      params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       query = genderCountryPieChartQuery(params).trim();
     } else {
+      params = prefixFiltersForQuery('WHERE', 'discipline like', 'funding_ro like');
       query = genderPieChartQuery(params).trim();
     }
     $.getJSON(BASE_URL, { q: query }, function(data) {
@@ -546,166 +547,177 @@ function initHighcharts() {
   });
   jQuery('.line-chart').each(function () {
     var holder = jQuery(this);
-    Highcharts.chart({
-      chart: {
-        renderTo: this,
-        zoomType: 'x',
-        type: 'area',
-        height: 290,
-        marginLeft: 61
-      },
-      title: {
-        text: ''
-      },
-      xAxis: {
-        tickWidth: 0,
-        tickmarkPlacement: 'on',
-        startOnTick: true,
-        tickInterval: 1,
-        minPadding: 0,
-        maxPadding: 0,
-        lineColor: "#7f8ec0",
-        lineWidth: 2,
-        labels: {
-          style: {
-            'color': '#030c28',
-            'font-size': '13px',
-            'font-weight': 'bold'
+    var query;
+    var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
+    if (FILTERS.iso2) {
+      query = researchersCountryLineChartQuery(params).trim();
+    } else {
+      query = researchersLineChartQuery(params).trim();
+    }
+    $.getJSON(BASE_URL, { q: query }, function (data) {
+      var apiData = parseResearchersLineChartData(data);
+      Highcharts.chart({
+        chart: {
+          renderTo: this,
+          zoomType: 'x',
+          type: 'area',
+          height: 290,
+          marginLeft: 61
+        },
+        title: {
+          text: ''
+        },
+        xAxis: {
+          tickWidth: 0,
+          tickmarkPlacement: 'on',
+          startOnTick: true,
+          tickInterval: 1,
+          minPadding: 0,
+          maxPadding: 0,
+          lineColor: "#7f8ec0",
+          lineWidth: 2,
+          labels: {
+            style: {
+              'color': '#030c28',
+              'font-size': '13px',
+              'font-weight': 'bold'
+            }
+          },
+          crosshair: {
+            width: 1,
+            color: '#b5bddb'
           }
         },
-        crosshair: {
-          width: 1,
-          color: '#b5bddb'
-        }
-      },
-      yAxis: {
-        title: {
+        yAxis: {
+          title: {
+            enabled: false
+          },
+          showFirstLabel: false,
+          tickInterval: 10,
+          gridLineWidth: 1,
+          gridLineColor: "#d6daef",
+          gridLineDashStyle: "dash",
+          min: 0,
+          labels: {
+            style: {
+              'color': '#030c28',
+              'font-size': '13px',
+              'font-weight': 'bold'
+            },
+            formatter: function () {
+              return this.value + 'k';
+            },
+            x: -23,
+            y: 2
+          }
+        },
+        legend: {
           enabled: false
         },
-        showFirstLabel: false,
-        tickInterval: 10,
-        gridLineWidth: 1,
-        gridLineColor: "#d6daef",
-        gridLineDashStyle: "dash",
-        min: 0,
-        labels: {
-          style: {
-            'color': '#030c28',
-            'font-size': '13px',
-            'font-weight': 'bold'
-          },
-          formatter: function () {
-            return this.value + 'k';
-          },
-          x: -23,
-          y: 2
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      tooltip: {
-        valueSuffix: 'k'
-      },
-      plotOptions: {
-        area: {
-          fillColor: {
-            linearGradient: {
-              x1: 0,
-              y1: 0,
-              x2: 0,
-              y2: 1
+        tooltip: {
+          valueSuffix: 'k'
+        },
+        plotOptions: {
+          area: {
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 1
+              },
+              stops: [
+                [0, 'rgba(0,0,126, 0.3)'],
+                [1, 'rgba(0,0,126, 0)']
+              ]
             },
-            stops: [
-              [0, 'rgba(0,0,126, 0.3)'],
-              [1, 'rgba(0,0,126, 0)']
-            ]
-          },
-          pointStart: 2007,
-          color: '#000080',
-          lineWidth: 2,
-          hover: {
-            lineWidth: 2
-          },
-          marker: {
-            enabled: false,
-            radius: 8,
-            fillColor: '#fff',
-            lineColor: '#000080',
+            pointStart: apiData.yearStart,
+            color: '#000080',
             lineWidth: 2,
+            hover: {
+              lineWidth: 2
+            },
+            marker: {
+              enabled: false,
+              radius: 8,
+              fillColor: '#fff',
+              lineColor: '#000080',
+              lineWidth: 2,
+              states: {
+                hover: {
+                  radiusPlus: 0,
+                  lineWidthPlus: 0
+                }
+              }
+            }
+          },
+          series: {
             states: {
               hover: {
-                radiusPlus: 0,
-                lineWidthPlus: 0
+                lineWidth: 2,
+                halo: {
+                  opacity: 0.25,
+                  size: 14
+                }
               }
             }
           }
         },
-        series: {
-          states: {
-            hover: {
-              lineWidth: 2,
-              halo: {
-                opacity: 0.25,
-                size: 14
+        series: [
+          {
+            name: 'Participants',
+            data: apiData.yearCount
+          }
+        ],
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 450
+            },
+            chartOptions: {
+              chart: {
+                height: 163,
+                marginLeft: 31
+              },
+              yAxis: {
+                labels: {
+                  style: {
+                    'color': '#274194',
+                    'font-size': '9px'
+                  },
+                  x: -6,
+                  y: 3
+                }
+              },
+              xAxis: {
+                labels: {
+                  style: {
+                    'color': '#68759c',
+                    'font-size': '9px',
+                    'font-weight': 'bold'
+                  },
+                  y: 15
+                }
               }
             }
-          }
+          }]
         }
-      },
-      series: [
-        {
-          name: 'Participants',
-          data: [3, 20.5, 20.5, 44, 18]
-        }
-      ],
-      responsive: {
-        rules: [{
-          condition: {
-            maxWidth: 450
-          },
-          chartOptions: {
-            chart: {
-              height: 163,
-              marginLeft: 31
-            },
-            yAxis: {
-              labels: {
-                style: {
-                  'color': '#274194',
-                  'font-size': '9px'
-                },
-                x: -6,
-                y: 3
-              }
-            },
-            xAxis: {
-              labels: {
-                style: {
-                  'color': '#68759c',
-                  'font-size': '9px',
-                  'font-weight': 'bold'
-                },
-                y: 15
-              }
-            }
-          }
-        }]
-      }
-    }, function (chart) {
-      var opts = {
-        name: chart.series[0].name.toUpperCase(),
-        max: chart.yAxis[0].dataMax
-      };
-      var legend = $(_.template('<div class="chart-max-val"><span> <%= name %> </span><b> <%= max %> k</b></div>')(opts));
-      var oldLegend = holder.parent().find('.chart-max-val');
+      }, function (chart) {
+        var opts = {
+          name: chart.series[0].name.toUpperCase(),
+          max: chart.yAxis[0].dataMax
+        };
+        var legend = $(_.template('<div class="chart-max-val"><span> <%= name %> </span><b> <%= max %> k</b></div>')(opts));
+        var oldLegend = holder.parent().find('.chart-max-val');
 
-      if(oldLegend[0]) {
-        oldLegend.replaceWith(legend);
-      } else {
-        legend.insertBefore(holder);
-      }
-    });
+        if(oldLegend[0]) {
+          oldLegend.replaceWith(legend);
+        } else {
+          legend.insertBefore(holder);
+        }
+      });
+    }.bind(this));
+
   });
   jQuery('.map-chart').each(function () {
     var holder = jQuery(this);
@@ -1165,11 +1177,22 @@ function setCountrySearch() {
   }, 700))
 }
 
-function prefixFiltersForQuery(prefixes) {
-  return Object.assign({}, FILTERS, {
-    discipline: FILTERS.discipline && prefixes[0] + ' \'' + FILTERS.discipline + '\'',
-    funding_round: FILTERS.funding_round && prefixes[1] + ' \'' + FILTERS.funding_round + '\''
-  });
+function prefixFiltersForQuery(firstClause, disciplinePrefix, fundingPrefix) {
+  var secondClause = 'AND';
+  var prefix =  Object.assign({}, FILTERS);
+  if (FILTERS.discipline) {
+    prefix =  Object.assign({}, FILTERS, {
+      discipline: firstClause + ' ' + disciplinePrefix + ' \'' + FILTERS.discipline + '\'',
+      funding_round: FILTERS.funding_round && secondClause + ' ' + fundingPrefix + ' \'' + FILTERS.funding_round + '\''
+    });
+  }
+
+  if (!FILTERS.discipline && FILTERS.funding_round) {
+    prefix = Object.assign({}, FILTERS, {
+      funding_round: firstClause + ' ' + fundingPrefix + ' \'' + FILTERS.funding_round + '\''
+    });
+  }
+  return prefix;
 }
 
 function parseGenderPieChartData(res) {
@@ -1183,4 +1206,11 @@ function parseGenderPieChartData(res) {
       if (next.F) return Object.assign({}, acc, { female: next.F });
       if (next.M) return Object.assign({}, acc, { male: next.M });
     }, {});
-};
+}
+
+function parseResearchersLineChartData(res) {
+  return {
+    yearStart: res.rows[0] ? res.rows[0].year : [],
+    yearCount: res.rows.map(function (row) { return row.count; })
+  };
+}
