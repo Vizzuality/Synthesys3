@@ -2673,7 +2673,6 @@ body {
 .tree-chart .link {
 	fill: none;
 	stroke: transparent;
-	stroke-width: 2px;
 }
 
 @media (min-width: 768px) {
@@ -3259,4 +3258,4 @@ body {
 		font-size: 10px;
 	}
 }
-
+

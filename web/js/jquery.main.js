@@ -18,10 +18,10 @@ jQuery(function () {
   initCarousel();
   initCustomForms();
   initBubbleChart();
-  initTreeChart();
+  initSankeyChart();
 });
 
-function initTreeChart() {
+function initSankeyChart() {
   var treeData = {
     "name": "FRANCE",
     "parent": "null",
@@ -30,7 +30,7 @@ function initTreeChart() {
     "children": [{
       "name": "Botanischer Garten und Botanisches M",
       "parent": "France",
-      "value": 0,
+      "value": 4,
       "level": "#7e8fc8"
     },
       {
@@ -51,7 +51,7 @@ function initTreeChart() {
       {
         "name": "Museum National d'Historie Naturelle",
         "parent": "France",
-        "value": 0,
+        "value": 60,
         "level": "#7e8fc8"
       },
       {
@@ -71,7 +71,7 @@ function initTreeChart() {
       {
         "name": "Museum National d'Historie Naturelle",
         "parent": "France",
-        "value": 0,
+        "value": 12,
         "level": "#7e8fc8"
       }]
   };
@@ -83,19 +83,19 @@ function initTreeChart() {
     "children": [{
       "name": "Botanischer Garten und Botanisches M",
       "parent": "France",
-      "value": 0,
+      "value": 2,
       "level": "#7e8fc8"
     },
       {
         "name": "Museum National d'Historie Naturelle",
         "parent": "France",
-        "value": 0,
+        "value": 60,
         "level": "#7e8fc8"
       },
       {
         "name": "Museum National d'Historie Naturelle",
         "parent": "France",
-        "value": 0,
+        "value": 12,
         "level": "#7e8fc8"
       }]
   };
@@ -176,6 +176,9 @@ function initTreeChart() {
         .attr("class", "link")
         .style("stroke", function (d) {
           return d.target.level;
+        })
+        .style("stroke-width", function (d) {
+          return d.target.value;
         })
         .attr("d", diagonal);
       resize();
