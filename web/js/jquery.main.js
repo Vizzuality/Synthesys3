@@ -1063,7 +1063,7 @@ function updateFilter(e) {
     FILTERS.iso = data;
     FILTERS.iso2 = ISO_TO_ISO2[data];
     $('.js-country-filter-dependent').each(function () {
-      this.textContent = label;
+      this.textContent = data && label;
     });
   } else {
     FILTERS[type] = data;
