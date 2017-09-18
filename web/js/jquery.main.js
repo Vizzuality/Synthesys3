@@ -1270,9 +1270,13 @@
   function parseDynamicSentenceData(res) {
     var country = FILTERS.iso && getSelectedCountry();
     var data = Object.assign(res.rows[0], { verb: country ? 'and was' : 'were' });
-    var sentence = _.template('<strong> <%= total_visitors %> </strong> vistors,' +
-      ' from <strong><%= institutes %> </strong> institutes, <%= verb %> granted a total of' +
-      ' <strong> <%= days %> </strong> research days.');
+    var sentence = _.template('<strong> <%= total_visitors %> </strong>' +
+      '  <% if (total_visitors > 1) print ("visitors"); else print("visitor") %>,' +
+      ' from <strong><%= institutes %> </strong>' +
+      ' <% if (institutes > 1) print ("institutes"); else print("institute") %>,' +
+      ' <%= verb %> granted a total of' +
+      ' <strong> <%= days %> </strong> research' +
+      ' <% if (days > 1) print ("days"); else print("day") %>.');
     if (country) return country.label + ' had' + sentence(data);
     return sentence(data);
   }
