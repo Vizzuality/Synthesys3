@@ -1,174 +1,199 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- set the encoding of your site -->
-	<meta charset="utf-8">
-	<!-- set the viewport width and initial-scale on mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Synthesys</title>
-	<!-- include the site stylesheet -->
-	<link media="all" rel="stylesheet" href="css/main.css">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
-	<!-- include jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" defer></script>
-	<script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js" defer><\/script>')</script>
-	<!-- include JavaScript for maps/graphs -->
-	<script src="https://code.highcharts.com/highcharts.js" defer></script>
-	<script src="https://code.highcharts.com/maps/modules/map.js" defer></script>
-	<script src="https://d3js.org/d3.v3.min.js" defer></script>
-	<!-- include custom JavaScript -->
-	<script src="js/jquery.main.js" defer></script>
+  <!-- set the encoding of your site -->
+  <meta charset="utf-8">
+  <!-- set the viewport width and initial-scale on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synthesys</title>
+  <!-- include the site stylesheet -->
+  <link media="all" rel="stylesheet" href="css/main.css">
+  <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i"
+      rel="stylesheet">
+  <!-- include jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" defer></script>
+  <script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js" defer><\/script>')</script>
+  <!-- include JavaScript for maps/graphs -->
+  <script src="https://code.highcharts.com/highcharts.js" defer></script>
+  <script src="https://code.highcharts.com/maps/modules/map.js" defer></script>
+  <script src="https://d3js.org/d3.v3.min.js" defer></script>
+  <!-- include custom JavaScript -->
+  <script src="js/jquery.main.js" defer></script>
+  <script src="js/lib.js" defer></script>
 </head>
 <body>
-	<!-- main container of all the page elements -->
-	<div id="wrapper">
-		<!-- header of the page -->
-		<header id="header">
-			<div class="container">
-				<!-- logo of the page -->
-				<div class="logo">
-					<a href="#">
-						<img src="images/logo.jpg" height="52" width="200" alt="synthesys synthesys of systematic resources">
-					</a>
-				</div>
-				<!-- main navigation area -->
-				<div class="header-content">
-					<a href="index.html" class="nav-opener"><span></span></a>
-					<div class="nav-area">
-						<nav id="nav">
-							<ul>
-								<li>
-									<a href="graph.html">Overview</a>
-								</li>
-								<li>
-									<a href="showcases.html">Showcases</a>
-								</li>
-								<li>
-									<a href="about.html">About</a>
-								</li>
-							</ul>
-						</nav>
-						<div class="language-holder">
-							<div class="language">
-								<a href="#" class="opener"><span>Language</span></a>
-								<ul class="dropdown">
-									<li><a href="#">ENG</a></li>
-									<li><a href="#">FRA</a></li>
-									<li><a href="#">SPANISH</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</header>
-		<!-- contain main informative part of the site -->
-		<main id="main" role="main">
-			<!-- visual block -->
-			<div class="visual">
-				<div class="container">
-					<!-- intro -->
-					<div class="intro">
-						<h1>Synthesys <span>3</span></h1>
-						<div class="text">
-							<div class="holder">
-								<p>Synthesys3 has created an accessible, and integrated European resource for researchers in the natural sciences in Europe.</p>
-							</div>
-						</div>
-					</div>
-					<!-- info slider -->
-					<div class="info-slider">
-						<div class="slide">
-							<div class="col showcase">
-								<div class="head">
-									<strong class="title">Showcases</strong>
-								</div>
-								<div class="bottom">
-									<a href="#" class="github-link">View on GitHub</a>
-								</div>
-							</div>
-						</div>
-						<div class="slide">
-							<div class="col">
-								<div class="head">
-									<strong class="title">Inselect</strong>
-									<span class="icon">
+<!-- main container of all the page elements -->
+<div id="wrapper">
+  <!-- header of the page -->
+  <header id="header">
+    <div class="container">
+      <!-- logo of the page -->
+      <div class="logo">
+        <a href="#">
+          <img src="images/logo.jpg" height="52" width="200"
+               alt="synthesys synthesys of systematic resources">
+        </a>
+      </div>
+      <!-- main navigation area -->
+      <div class="header-content">
+        <a href="index.html" class="nav-opener"><span></span></a>
+        <div class="nav-area">
+          <nav id="nav">
+            <ul>
+              <li>
+                <a href="graph.html">Overview</a>
+              </li>
+              <li>
+                <a href="showcases.html">Showcases</a>
+              </li>
+              <li>
+                <a href="about.html">About</a>
+              </li>
+            </ul>
+          </nav>
+          <div class="language-holder">
+            <div class="language">
+              <a href="#" class="opener"><span>Language</span></a>
+              <ul class="dropdown">
+                <li><a href="#">ENG</a></li>
+                <li><a href="#">FRA</a></li>
+                <li><a href="#">SPANISH</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- contain main informative part of the site -->
+  <main id="main" role="main">
+    <!-- visual block -->
+    <div class="visual">
+      <div class="container">
+        <!-- intro -->
+        <div class="intro">
+          <h1>Synthesys <span>3</span></h1>
+          <div class="text">
+            <div class="holder">
+              <p>Synthesys3 has created an accessible, and integrated European resource for
+                researchers in the natural sciences in Europe.</p>
+            </div>
+          </div>
+        </div>
+        <!-- info slider -->
+        <div class="info-slider">
+          <div class="slide">
+            <div class="col showcase">
+              <div class="head">
+                <strong class="title">Showcases</strong>
+              </div>
+              <div class="bottom">
+                <a href="#" class="github-link">View on GitHub</a>
+              </div>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="col">
+              <div class="head">
+                <strong class="title">Inselect</strong>
+                <span class="icon">
 										<span>
 											<picture>
-												<source srcset="images/icon01-small.jpg, images/icon01-small@2x.jpg 2x" media="(max-width: 767px)">
-												<source srcset="images/icon01-large.jpg, images/icon01-large@2x.jpg 2x">
-												<img src="images/icon01-large.jpg" alt="image description">
+												<source
+                                                    srcset="images/icon01-small.jpg, images/icon01-small@2x.jpg 2x"
+                                                    media="(max-width: 767px)">
+												<source
+                                                    srcset="images/icon01-large.jpg, images/icon01-large@2x.jpg 2x">
+												<img src="images/icon01-large.jpg"
+                                                     alt="image description">
 											</picture>
 										</span>
 									</span>
-								</div>
-								<div class="bottom">
-									<p>Short Description of the Project  Aenean lacinia bibendum nulla sed consectetur.</p>
-									<a href="#" class="search-link"><i class="icon-search"></i></a>
-								</div>
-							</div>
-						</div>
-						<div class="slide">
-							<div class="col">
-								<div class="head">
-									<strong class="title">ZooSphere</strong>
-									<span class="icon">
+              </div>
+              <div class="bottom">
+                <p>Short Description of the Project Aenean lacinia bibendum nulla sed
+                  consectetur.</p>
+                <a href="#" class="search-link"><i class="icon-search"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="col">
+              <div class="head">
+                <strong class="title">ZooSphere</strong>
+                <span class="icon">
 										<span>
 											<picture>
-												<source srcset="images/icon02-small.jpg, images/icon02-small@2x.jpg 2x" media="(max-width: 767px)">
-												<source srcset="images/icon02-large.jpg, images/icon02-large@2x.jpg 2x">
-												<img src="images/icon02-large.jpg" alt="image description">
+												<source
+                                                    srcset="images/icon02-small.jpg, images/icon02-small@2x.jpg 2x"
+                                                    media="(max-width: 767px)">
+												<source
+                                                    srcset="images/icon02-large.jpg, images/icon02-large@2x.jpg 2x">
+												<img src="images/icon02-large.jpg"
+                                                     alt="image description">
 											</picture>
 										</span>
 									</span>
-								</div>
-								<div class="bottom">
-									<p>Short Description of the Project  Aenean lacinia bibendum nulla sed consectetur.</p>
-									<a href="#" class="search-link"><i class="icon-search"></i></a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- map info -->
-			<div class="map-info container">
-				<div class="detail">
-					<p><span>5,718</span> vistors, from <span>767</span> institutes, were granted a total of <span>69,472</span> research days.</p>
-					<a href="#" class="more">Discover More</a>
-				</div>
-				<div class="map">
-					<img src="images/map-placeholder.jpg" height="576" width="768" alt="image description">
-				</div>
-			</div>
-			<!-- testimonial -->
-			<div class="testimonial" style="background-image:url(images/bg01.jpg);">
-				<div class="container">
-					<div class="testimonial-slider">
-						<div class="mask">
-							<div class="slideset">
-								<div class="slide">
-									<h2>Our Researchers believe in the project…</h2>
-									<p>New identifications + types after 2 weeks of work <a href="#">@TheBotanics</a> <a href="#">#herbarium</a>. Thanks to <a href="#">@SynthesysEU!</a> It's been a pleasure. <a href="#">#Iamataxonomist</a> <strong><a href="#">@TheBotanics</a> - Jul 22</strong></p>
-								</div>
-								<div class="slide">
-									<h2>Our Researchers believe in the project…</h2>
-									<p>New identifications + types after 2 weeks of work <a href="#">@TheBotanics</a> <a href="#">#herbarium</a>. Thanks to <a href="#">@SynthesysEU!</a> It's been a pleasure. <a href="#">#Iamataxonomist</a> <strong><a href="#">@TheBotanics</a> - Jul 22</strong></p>
-								</div>
-								<div class="slide">
-									<h2>Our Researchers believe in the project…</h2>
-									<p>New identifications + types after 2 weeks of work <a href="#">@TheBotanics</a> <a href="#">#herbarium</a>. Thanks to <a href="#">@SynthesysEU!</a> It's been a pleasure. <a href="#">#Iamataxonomist</a> <strong><a href="#">@TheBotanics</a> - Jul 22</strong></p>
-								</div>
-							</div>
-						</div>
-						<ul class="prev-next">
-							<li><a href="#" class="btn-prev">Prev Testimonal</a></li>
-							<li><a href="#" class="btn-next">Next Testimonal</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</main>
-	</div>
+              </div>
+              <div class="bottom">
+                <p>Short Description of the Project Aenean lacinia bibendum nulla sed
+                  consectetur.</p>
+                <a href="#" class="search-link"><i class="icon-search"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- map info -->
+    <div class="map-info container">
+      <div class="detail">
+        <p><span>5,718</span> vistors, from <span>767</span> institutes, were granted a total of
+          <span>69,472</span> research days.</p>
+        <a href="#" class="more">Discover More</a>
+      </div>
+      <div class="map">
+        <img src="images/map-placeholder.jpg" height="576" width="768" alt="image description">
+      </div>
+    </div>
+    <!-- testimonial -->
+    <div class="testimonial" style="background-image:url(images/bg01.jpg);">
+      <div class="container">
+        <div class="testimonial-slider">
+          <div class="mask">
+            <div class="slideset">
+              <div class="slide">
+                <h2>Our Researchers believe in the project…</h2>
+                <p>New identifications + types after 2 weeks of work <a href="#">@TheBotanics</a> <a
+                    href="#">#herbarium</a>. Thanks to <a href="#">@SynthesysEU!</a> It's been a
+                  pleasure. <a href="#">#Iamataxonomist</a> <strong><a href="#">@TheBotanics</a> -
+                    Jul 22</strong></p>
+              </div>
+              <div class="slide">
+                <h2>Our Researchers believe in the project…</h2>
+                <p>New identifications + types after 2 weeks of work <a href="#">@TheBotanics</a> <a
+                    href="#">#herbarium</a>. Thanks to <a href="#">@SynthesysEU!</a> It's been a
+                  pleasure. <a href="#">#Iamataxonomist</a> <strong><a href="#">@TheBotanics</a> -
+                    Jul 22</strong></p>
+              </div>
+              <div class="slide">
+                <h2>Our Researchers believe in the project…</h2>
+                <p>New identifications + types after 2 weeks of work <a href="#">@TheBotanics</a> <a
+                    href="#">#herbarium</a>. Thanks to <a href="#">@SynthesysEU!</a> It's been a
+                  pleasure. <a href="#">#Iamataxonomist</a> <strong><a href="#">@TheBotanics</a> -
+                    Jul 22</strong></p>
+              </div>
+            </div>
+          </div>
+          <ul class="prev-next">
+            <li><a href="#" class="btn-prev">Prev Testimonal</a></li>
+            <li><a href="#" class="btn-next">Next Testimonal</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
 </body>
 </html>

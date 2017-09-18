@@ -1,128 +1,149 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- set the encoding of your site -->
-	<meta charset="utf-8">
-	<!-- set the viewport width and initial-scale on mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Synthesys</title>
-	<!-- include the site stylesheet -->
-	<link media="all" rel="stylesheet" href="css/main.css">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
-	<!-- include jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" defer></script>
-	<script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js" defer><\/script>')</script>
-	<!-- include JavaScript for maps/graphs -->
-	<script src="https://code.highcharts.com/highcharts.js" defer></script>
-	<script src="https://code.highcharts.com/maps/modules/map.js" defer></script>
-	<script src="https://d3js.org/d3.v3.min.js" defer></script>
-	<!-- include custom JavaScript -->
-	<script src="js/jquery.main.js" defer></script>
+  <!-- set the encoding of your site -->
+  <meta charset="utf-8">
+  <!-- set the viewport width and initial-scale on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synthesys</title>
+  <!-- include the site stylesheet -->
+  <link media="all" rel="stylesheet" href="css/main.css">
+  <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i"
+      rel="stylesheet">
+  <!-- include lodash -->
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
+  <!-- include jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" defer></script>
+  <script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js" defer><\/script>')</script>
+  <!-- include JavaScript for maps/graphs -->
+  <script src="https://code.highcharts.com/highcharts.js" defer></script>
+  <script src="https://code.highcharts.com/maps/modules/map.js" defer></script>
+  <script src="https://d3js.org/d3.v3.min.js" defer></script>
+  <!-- include custom JavaScript -->
+  <script src="js/jquery.main.js" defer></script>
+  <script src="js/lib.js" defer></script>
 </head>
 <body>
-	<!-- main container of all the page elements -->
-	<div id="wrapper">
-		<!-- header of the page -->
-		<header id="header">
-			<div class="container">
-				<!-- logo of the page -->
-				<div class="logo">
-					<a href="#">
-						<img src="images/logo.jpg" height="52" width="200" alt="synthesys synthesys of systematic resources">
-					</a>
-				</div>
-				<!-- main navigation area -->
-				<div class="header-content">
-					<a href="index.html" class="nav-opener"><span></span></a>
-					<div class="nav-area">
-						<nav id="nav">
-							<ul>
-								<li>
-									<a href="graph.html">Overview</a>
-								</li>
-								<li class="active">
-									<a href="showcases.html">Showcases</a>
-								</li>
-								<li>
-									<a href="about.html">About</a>
-								</li>
-							</ul>
-						</nav>
-						<div class="language-holder">
-							<div class="language">
-								<a href="#" class="opener"><span>Language</span></a>
-								<ul class="dropdown">
-									<li><a href="#">ENG</a></li>
-									<li><a href="#">FRA</a></li>
-									<li><a href="#">SPANISH</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</header>
-		<!-- contain main informative part of the site -->
-		<main id="main" role="main">
-			<!-- sub nav -->
-			<nav class="sub-nav">
-				<div class="container">
-					<ul>
-						<li><a href="#">Inselect</a></li>
-						<li class="active"><a href="#">Miniature LivesMagnified</a></li>
-						<li><a href="#">Zoosphere</a></li>
-						<li><a href="#">Global Genome Biodiversity Network</a></li>
-					</ul>
-				</div>
-			</nav>
-			<div class="container">
-				<!-- project block -->
-				<div class="project-block">
-					<div class="btn-holder">
-						<a href="#" class="more">Go to Project Site</a>
-					</div>
-					<h1>Miniature Lives Magnified</h1>
-					<div class="project-info">
-						<div class="project-caption">
-							<div class="img-holder">
-								<picture>
-									<source srcset="images/img02-small.jpg, images/img02-small@2x.jpg 2x" media="(max-width: 767px)">
-									<source srcset="images/img02-large.jpg, images/img02-large@2x.jpg 2x">
-									<img src="images/img02-large.jpg" alt="image description">
-								</picture>
-							</div>
-							<div class="description">
-								<h2>At a glance</h2>
-								<p>Transcribe microscope slide labels.</p>
-								<dl>
-									<dt>Type of Activity:</dt>
-									<dd>EARTH SCIENCES &amp; ENVIRONMENT</dd>
-									<dt>When?</dt>
-									<dd>2 of June 2017</dd>
-								</dl>
-							</div>
-						</div>
-						<div class="detail">
-							<div class="widget">
-								<p>This project is currently closed. Thank you to the 1,000-plus digital volunteers who helped us to extract research data from over 6,000 microscope slides of the world's smallest insects.</p>
-							</div>
-							<div class="widget">
-								<h2>About the Project</h2>
-								<p>The Museum is on a mission to digitise the 80 million specimens in its collection. We want to make the information the specimens hold about the natural world more openly available to scientists and the public.</p>
-								<p>We have imaged more than 100,000 microscope slides of tiny insects, barely visible to the naked eye. We have been asking digital volunteers for the Museum to help transcribe information from the specimen labels so that the data can be used for scientific research.</p>
-								<h3><span>The killer within:</span> wasps, but not as you know them</h3>
-								<p>Our first collection focused on a group of wasps called chalcids (pronounced 'kal-sids'). These tiny wasps are parasitoids, meaning they lay their eggs inside other insects. When chalcid eggs hatch the emerging larvae eat the inside of their host. They then grow and pupate until mature enough to burst out as adults, finally killing the host.</p>
-								<p>This unique life cycle makes chalcids an important biological control agent, protecting crops and reducing invasive species.</p>
-							</div>
-							<div class="widget">
-								<h2>Where will this data go?</h2>
-								<p>We are now processing the chalcid collection's specimen label data that was transcribed by our digital volunteers. It will become available on the Museum's <a href="#">Data Portal</a> for anyone in the world to study.</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
-	</div>
+<!-- main container of all the page elements -->
+<div id="wrapper">
+  <!-- header of the page -->
+  <header id="header">
+    <div class="container">
+      <!-- logo of the page -->
+      <div class="logo">
+        <a href="#">
+          <img src="images/logo.jpg" height="52" width="200"
+               alt="synthesys synthesys of systematic resources">
+        </a>
+      </div>
+      <!-- main navigation area -->
+      <div class="header-content">
+        <a href="index.html" class="nav-opener"><span></span></a>
+        <div class="nav-area">
+          <nav id="nav">
+            <ul>
+              <li>
+                <a href="graph.html">Overview</a>
+              </li>
+              <li class="active">
+                <a href="showcases.html">Showcases</a>
+              </li>
+              <li>
+                <a href="about.html">About</a>
+              </li>
+            </ul>
+          </nav>
+          <div class="language-holder">
+            <div class="language">
+              <a href="#" class="opener"><span>Language</span></a>
+              <ul class="dropdown">
+                <li><a href="#">ENG</a></li>
+                <li><a href="#">FRA</a></li>
+                <li><a href="#">SPANISH</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- contain main informative part of the site -->
+  <main id="main" role="main">
+    <!-- sub nav -->
+    <nav class="sub-nav">
+      <div class="container">
+        <ul>
+          <li><a href="#">Inselect</a></li>
+          <li class="active"><a href="#">Miniature LivesMagnified</a></li>
+          <li><a href="#">Zoosphere</a></li>
+          <li><a href="#">Global Genome Biodiversity Network</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <!-- project block -->
+      <div class="project-block">
+        <div class="btn-holder">
+          <a href="#" class="more">Go to Project Site</a>
+        </div>
+        <h1>Miniature Lives Magnified</h1>
+        <div class="project-info">
+          <div class="project-caption">
+            <div class="img-holder">
+              <picture>
+                <source srcset="images/img02-small.jpg, images/img02-small@2x.jpg 2x"
+                        media="(max-width: 767px)">
+                <source srcset="images/img02-large.jpg, images/img02-large@2x.jpg 2x">
+                <img src="images/img02-large.jpg" alt="image description">
+              </picture>
+            </div>
+            <div class="description">
+              <h2>At a glance</h2>
+              <p>Transcribe microscope slide labels.</p>
+              <dl>
+                <dt>Type of Activity:</dt>
+                <dd>EARTH SCIENCES &amp; ENVIRONMENT</dd>
+                <dt>When?</dt>
+                <dd>2 of June 2017</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="detail">
+            <div class="widget">
+              <p>This project is currently closed. Thank you to the 1,000-plus digital volunteers
+                who helped us to extract research data from over 6,000 microscope slides of the
+                world's smallest insects.</p>
+            </div>
+            <div class="widget">
+              <h2>About the Project</h2>
+              <p>The Museum is on a mission to digitise the 80 million specimens in its collection.
+                We want to make the information the specimens hold about the natural world more
+                openly available to scientists and the public.</p>
+              <p>We have imaged more than 100,000 microscope slides of tiny insects, barely visible
+                to the naked eye. We have been asking digital volunteers for the Museum to help
+                transcribe information from the specimen labels so that the data can be used for
+                scientific research.</p>
+              <h3><span>The killer within:</span> wasps, but not as you know them</h3>
+              <p>Our first collection focused on a group of wasps called chalcids (pronounced
+                'kal-sids'). These tiny wasps are parasitoids, meaning they lay their eggs inside
+                other insects. When chalcid eggs hatch the emerging larvae eat the inside of their
+                host. They then grow and pupate until mature enough to burst out as adults, finally
+                killing the host.</p>
+              <p>This unique life cycle makes chalcids an important biological control agent,
+                protecting crops and reducing invasive species.</p>
+            </div>
+            <div class="widget">
+              <h2>Where will this data go?</h2>
+              <p>We are now processing the chalcid collection's specimen label data that was
+                transcribed by our digital volunteers. It will become available on the Museum's <a
+                    href="#">Data Portal</a> for anyone in the world to study.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
 </body>
 </html>

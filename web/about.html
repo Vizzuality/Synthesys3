@@ -1,120 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- set the encoding of your site -->
-	<meta charset="utf-8">
-	<!-- set the viewport width and initial-scale on mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Synthesys</title>
-	<!-- include the site stylesheet -->
-	<link media="all" rel="stylesheet" href="css/main.css">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
-	<!-- include jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" defer></script>
-	<script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js" defer><\/script>')</script>
-	<!-- include JavaScript for maps/graphs -->
-	<script src="https://code.highcharts.com/highcharts.js" defer></script>
-	<script src="https://code.highcharts.com/maps/modules/map.js" defer></script>
-	<script src="https://d3js.org/d3.v3.min.js" defer></script>
-	<!-- include custom JavaScript -->
-	<script src="js/jquery.main.js" defer></script>
+  <!-- set the encoding of your site -->
+  <meta charset="utf-8">
+  <!-- set the viewport width and initial-scale on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synthesys</title>
+  <!-- include the site stylesheet -->
+  <link media="all" rel="stylesheet" href="css/main.css">
+  <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i"
+      rel="stylesheet">
+  <!-- include jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" defer></script>
+  <script>window.jQuery || document.write('<script src="js/jquery-1.11.3.min.js" defer><\/script>')</script>
+  <!-- include JavaScript for maps/graphs -->
+  <script src="https://code.highcharts.com/highcharts.js" defer></script>
+  <script src="https://code.highcharts.com/maps/modules/map.js" defer></script>
+  <script src="https://d3js.org/d3.v3.min.js" defer></script>
+  <!-- include custom JavaScript -->
+  <script src="js/jquery.main.js" defer></script>
+  <script src="js/lib.js" defer></script>
 </head>
 <body>
-	<!-- main container of all the page elements -->
-	<div id="wrapper">
-		<!-- header of the page -->
-		<header id="header">
-			<div class="container">
-				<!-- logo of the page -->
-				<div class="logo">
-					<a href="#">
-						<img src="images/logo.jpg" height="52" width="200" alt="synthesys synthesys of systematic resources">
-					</a>
-				</div>
-				<!-- main navigation area -->
-				<div class="header-content">
-					<a href="index.html" class="nav-opener"><span></span></a>
-					<div class="nav-area">
-						<nav id="nav">
-							<ul>
-								<li>
-									<a href="graph.html">Overview</a>
-								</li>
-								<li>
-									<a href="showcases.html">Showcases</a>
-								</li>
-								<li class="active">
-									<a href="about.html">About</a>
-								</li>
-							</ul>
-						</nav>
-						<div class="language-holder">
-							<div class="language">
-								<a href="#" class="opener"><span>Language</span></a>
-								<ul class="dropdown">
-									<li><a href="#">ENG</a></li>
-									<li><a href="#">FRA</a></li>
-									<li><a href="#">SPANISH</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</header>
-		<!-- contain main informative part of the site -->
-		<main id="main" role="main">
-			<div class="container">
-				<!-- intro text -->
-				<div class="intro-text">
-					<h1>About Synthesys</h1>
-					<div class="text">
-						<p>SYNTHESYS3 networking activities support and develop natural history collections infrastructure in Europe, promoting best-practice in collections management by aligning policies and processes.</p>
-					</div>
-				</div>
-				<!-- about detail -->
-				<div class="about-detail">
-					<h2>1. Collections Care and Management</h2>
-					<ul>
-						<li>Harmonisted collections care and management processes</li>
-						<li>Creation of a ‘Wiki Handbook’ on Digital Collections</li>
-						<li>Creation of a best practice handbook on 3D imaging of natural history collections</li>
-						<li>Creation of a handbook on protocols for optimal micro-CT imaging</li>
-						<li>A policy for managing DNA and tissue bank facilities.</li>
-					</ul>
-				</div>
-			</div>
-			<!-- promo -->
-			<div class="promo">
-				<div class="img-holder">
-					<div class="img-frame">
-						<picture>
-							<source srcset="images/img01-small.jpg, images/img01-small@2x.jpg 2x" media="(max-width: 767px)">
-							<source srcset="images/img01-large.jpg, images/img01-large@2x.jpg 2x">
-							<img src="images/img01-large.jpg" alt="image description">
-						</picture>
-					</div>
-				</div>
-			</div>
-			<div class="container">
-				<!-- about detail -->
-				<div class="about-detail">
-					<h2>2. DNA collections</h2>
-					<ul>
-						<li>A network of DNA and tissue banks via collaboration with the Global Genome Biodiversity Network</li>
-						<li>Introduction of strategies for institutional DNA barcoding</li>
-					</ul>
-					<h3>A Strategic Road Map for European natural history collections</h3>
-					<ul>
-						<li>Supporting the deleopment of the Distributed System of Scientific Collections (DiSSCo) ESFRI initiative</li>
-					</ul>
-					<h3>Collections Self-Assessment tool (CSAT)</h3>
-					<ul>
-						<li>CSAT enables institutions to assess the management, care and access to their physical and digital collections</li>
-					</ul>
-				</div>
-			</div>
-		</main>
-	</div>
+<!-- main container of all the page elements -->
+<div id="wrapper">
+  <!-- header of the page -->
+  <header id="header">
+    <div class="container">
+      <!-- logo of the page -->
+      <div class="logo">
+        <a href="#">
+          <img src="images/logo.jpg" height="52" width="200"
+               alt="synthesys synthesys of systematic resources">
+        </a>
+      </div>
+      <!-- main navigation area -->
+      <div class="header-content">
+        <a href="index.html" class="nav-opener"><span></span></a>
+        <div class="nav-area">
+          <nav id="nav">
+            <ul>
+              <li>
+                <a href="graph.html">Overview</a>
+              </li>
+              <li>
+                <a href="showcases.html">Showcases</a>
+              </li>
+              <li class="active">
+                <a href="about.html">About</a>
+              </li>
+            </ul>
+          </nav>
+          <div class="language-holder">
+            <div class="language">
+              <a href="#" class="opener"><span>Language</span></a>
+              <ul class="dropdown">
+                <li><a href="#">ENG</a></li>
+                <li><a href="#">FRA</a></li>
+                <li><a href="#">SPANISH</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- contain main informative part of the site -->
+  <main id="main" role="main">
+    <div class="container">
+      <!-- intro text -->
+      <div class="intro-text">
+        <h1>About Synthesys</h1>
+        <div class="text">
+          <p>SYNTHESYS3 networking activities support and develop natural history collections
+            infrastructure in Europe, promoting best-practice in collections management by aligning
+            policies and processes.</p>
+        </div>
+      </div>
+      <!-- about detail -->
+      <div class="about-detail">
+        <h2>1. Collections Care and Management</h2>
+        <ul>
+          <li>Harmonisted collections care and management processes</li>
+          <li>Creation of a ‘Wiki Handbook’ on Digital Collections</li>
+          <li>Creation of a best practice handbook on 3D imaging of natural history collections</li>
+          <li>Creation of a handbook on protocols for optimal micro-CT imaging</li>
+          <li>A policy for managing DNA and tissue bank facilities.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- promo -->
+    <div class="promo">
+      <div class="img-holder">
+        <div class="img-frame">
+          <picture>
+            <source srcset="images/img01-small.jpg, images/img01-small@2x.jpg 2x"
+                    media="(max-width: 767px)">
+            <source srcset="images/img01-large.jpg, images/img01-large@2x.jpg 2x">
+            <img src="images/img01-large.jpg" alt="image description">
+          </picture>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <!-- about detail -->
+      <div class="about-detail">
+        <h2>2. DNA collections</h2>
+        <ul>
+          <li>A network of DNA and tissue banks via collaboration with the Global Genome
+            Biodiversity Network
+          </li>
+          <li>Introduction of strategies for institutional DNA barcoding</li>
+        </ul>
+        <h3>A Strategic Road Map for European natural history collections</h3>
+        <ul>
+          <li>Supporting the deleopment of the Distributed System of Scientific Collections (DiSSCo)
+            ESFRI initiative
+          </li>
+        </ul>
+        <h3>Collections Self-Assessment tool (CSAT)</h3>
+        <ul>
+          <li>CSAT enables institutions to assess the management, care and access to their physical
+            and digital collections
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>
 </body>
 </html>
