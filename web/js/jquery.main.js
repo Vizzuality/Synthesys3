@@ -692,7 +692,12 @@
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
         var apiData = parseResearcherTypeDonutChartData(data);
-        renderPieChart(this, apiData);
+        renderPieChart(this, apiData, {
+          height: 400,
+          heightResponsive: 370,
+          center: ['50%', '70%'],
+          centerResponsive: ['50%', '75%']
+        });
       }.bind(this));
     })
     jQuery('.column-chart').each(function () {
@@ -998,14 +1003,21 @@
     jcf.replaceAll();
   }
 
-  function renderPieChart(selector, data) {
+  function renderPieChart(selector, data, options) {
+    var config = Object.assign({
+      height: 280,
+      heightResponsive: 349,
+      center: ['50%', '50%'],
+      centerResponsive: ['50%', '57%']
+    }, options);
+
     Highcharts.chart({
       chart: {
         renderTo: selector,
         plotBackgroundColor: null,
         plotBorderWidth: 0,
         plotShadow: false,
-        height: 280
+        height: config.height
       },
       title: {
         text: ''
@@ -1023,7 +1035,7 @@
           },
           startAngle: 0,
           endAngle: 360,
-          center: ['50%', '50%'],
+          center: config.center,
           showInLegend: true,
           borderWidth: 0,
           size: 257
@@ -1063,12 +1075,12 @@
           },
           chartOptions: {
             chart: {
-              height: 349
+              height: config.heightResponsive
             },
             plotOptions: {
               pie: {
                 size: 213,
-                center: ['50%', '57%']
+                center: config.centerResponsive
               }
             }
           }
