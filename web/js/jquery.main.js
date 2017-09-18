@@ -695,120 +695,118 @@
       }.bind(this));
     })
     jQuery('.column-chart').each(function () {
-      Highcharts.chart({
-        chart: {
-          type: 'column',
-          renderTo: this,
-          height: 423
-        },
-        title: {
-          text: ''
-        },
-        xAxis: {
-          type: 'category',
-          tickWidth: 0,
-          tickmarkPlacement: 'on',
-          startOnTick: true,
-          lineColor: "#7b8abd",
-          lineWidth: 2,
-          labels: {
-            style: {
-              'color': '#7b8abd',
-              'font-size': '13px'
-            }
-          }
-        },
-        yAxis: {
-          tickInterval: 5,
-          gridLineWidth: 1,
-          gridLineColor: "#d1d6e8",
-          gridLineDashStyle: "dash",
-          showFirstLabel: false,
-          min: 0,
-          labels: {
-            style: {
-              'color': '#000623',
-              'font-size': '13px',
-              'font-weight': 'bold'
-            },
-            x: -15,
-            y: 15
+      var query;
+      if (FILTERS.iso) {
+        query = papersPerYearCountryBarChartQuery(FILTERS).trim();
+      } else {
+        var params = prefixFiltersForQuery('AND', 'discipline like', '');
+        query = papersPerYearBarChartQuery(params).trim();
+      }
+      $.getJSON(BASE_URL, { q: query }, function (data) {
+        var apiData = parsePapersByYearBarChartData(data);
+        Highcharts.chart({
+          chart: {
+            type: 'column',
+            renderTo: this,
+            height: 423
           },
           title: {
-            enabled: false
-          }
-        },
-        legend: {
-          enabled: false
-        },
-        plotOptions: {
-          series: {
-            color: {
-              linearGradient: {
-                x1: 0,
-                y1: 0,
-                x2: 0,
-                y2: 1
-              },
-              stops: [
-                [0, 'rgba(37, 89, 194, 1)'],
-                [1, 'rgba(28, 56, 148, 1)']
-              ],
-            },
-            groupPadding: 0,
-            pointPadding: 0.2,
-          }
-        },
-        tooltip: {
-          headerFormat: '',
-          pointFormat: 'Papers per {point.name}: <b>{point.y}</b>'
-        },
-        series: [{
-          name: 'Population',
-          data: [
-            ['2007', 24],
-            ['2008', 36],
-            ['2009', 14],
-            ['2010', 26],
-            ['2011', 37.5],
-            ['2012', 40.5],
-            ['2013', 36],
-            ['2014', 14],
-            ['2015', 19],
-            ['2016', 17],
-            ['2017', 19]
-          ]
-        }],
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 450
-            },
-            chartOptions: {
-              chart: {
-                height: 225
-              },
-              yAxis: {
-                labels: {
-                  style: {
-                    'font-size': '9px'
-                  },
-                  x: -7,
-                  y: 10
-                }
-              },
-              xAxis: {
-                labels: {
-                  style: {
-                    'font-size': '9px'
-                  },
-                  y: 10
-                }
+            text: ''
+          },
+          xAxis: {
+            type: 'category',
+            tickWidth: 0,
+            tickmarkPlacement: 'on',
+            startOnTick: true,
+            lineColor: "#7b8abd",
+            lineWidth: 2,
+            labels: {
+              style: {
+                'color': '#7b8abd',
+                'font-size': '13px'
               }
             }
-          }]
-        }
-      });
+          },
+          yAxis: {
+            tickInterval: 5,
+            gridLineWidth: 1,
+            gridLineColor: "#d1d6e8",
+            gridLineDashStyle: "dash",
+            showFirstLabel: false,
+            min: 0,
+            labels: {
+              style: {
+                'color': '#000623',
+                'font-size': '13px',
+                'font-weight': 'bold'
+              },
+              x: -15,
+              y: 15
+            },
+            title: {
+              enabled: false
+            }
+          },
+          legend: {
+            enabled: false
+          },
+          plotOptions: {
+            series: {
+              color: {
+                linearGradient: {
+                  x1: 0,
+                  y1: 0,
+                  x2: 0,
+                  y2: 1
+                },
+                stops: [
+                  [0, 'rgba(37, 89, 194, 1)'],
+                  [1, 'rgba(28, 56, 148, 1)']
+                ],
+              },
+              groupPadding: 0,
+              pointPadding: 0.2,
+            }
+          },
+          tooltip: {
+            headerFormat: '',
+            pointFormat: 'Papers per {point.name}: <b>{point.y}</b>'
+          },
+          series: [{
+            name: 'Population',
+            data: apiData.columns
+          }],
+          responsive: {
+            rules: [{
+              condition: {
+                maxWidth: 450
+              },
+              chartOptions: {
+                chart: {
+                  height: 225
+                },
+                yAxis: {
+                  labels: {
+                    style: {
+                      'font-size': '9px'
+                    },
+                    x: -7,
+                    y: 10
+                  }
+                },
+                xAxis: {
+                  labels: {
+                    style: {
+                      'font-size': '9px'
+                    },
+                    y: 10
+                  }
+                }
+              }
+            }]
+          }
+        });
+      }.bind(this));
     });
     jQuery('.treemap-chart').each(function () {
       var holder = jQuery(this);
@@ -1196,6 +1194,12 @@
           color: colors[i]
         }
       });
+  }
+
+  function parsePapersByYearBarChartData(res) {
+    return {
+      columns: res.rows.map(function (row) { return [row.year, row.count]; })
+    };
   }
 
   function parseInstitutesVisitedTreeChartData(res) {

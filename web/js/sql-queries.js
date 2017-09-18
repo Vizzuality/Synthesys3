@@ -107,6 +107,31 @@ var institutesVisitedTreeChartQuery = _.template('SELECT synthesys.inst_id AS in
   ' ORDER BY synthesys.count DESC'
 );
 
+var papersPerYearCountryBarChartQuery = _.template('SELECT year, count(title)' +
+  ' FROM publications' +
+  ' WHERE iso = \'<%= iso %>\'' +
+  ' AND publicationstatus = \'Published\'' +
+  ' AND year != \'1914\'' +
+  ' AND year != \'1990\'' +
+  ' And year != \'201\'' +
+  ' And year != \'no_data\'' +
+  ' GROUP BY year' +
+  ' ORDER BY year'
+);
+
+var papersPerYearBarChartQuery = _.template('SELECT year, count(title)' +
+  ' FROM publications' +
+  ' WHERE publicationstatus = \'Published\'' +
+  ' AND year != \'1914\'' +
+  ' AND year != \'1990\'' +
+  ' AND year != \'201\'' +
+  ' AND year != \'no_data\'' +
+  ' <%= discipline %>' +
+  ' GROUP BY year' +
+  ' ORDER BY year'
+);
+
+
 var dynamicSentenceCountryQuery = _.template('WITH gadm28 AS (SELECT the_geom_webmercator, iso2 FROM  gadm28_countries WHERE iso2 = \'<%= iso2 %>\')' +
   ' SELECT COUNT(DISTINCT(synthesys.home_insti)) as institutes,' +
   ' COUNT(synthesys.visit_days) AS total_visitors,' +
