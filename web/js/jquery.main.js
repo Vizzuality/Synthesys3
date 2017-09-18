@@ -23,6 +23,7 @@
   }
 
   function render() {
+    initDynamicSentence();
     initHighcharts();
     initBubbleChart();
     initSankeyChart();
@@ -925,6 +926,21 @@
     });
   }
 
+  function initDynamicSentence() {
+    var query, params;
+    if (FILTERS.iso2) {
+      params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
+      query = dynamicSentenceCountryQuery(params).trim();
+    } else {
+      params = prefixFiltersForQuery('WHERE', 'discipline like', 'funding_ro like');
+      query = dynamicSenteceQuery(params).trim();
+    }
+    $.getJSON(BASE_URL, { q: query }, function (data) {
+      var sentence = parseDynamicSentenceData(data);
+      $('.js-dynamic-sentence').html(sentence);
+    }.bind(this));
+  }
+
 // slick init
   function initSlickCarousel() {
     jQuery('.info-slider').slick({
@@ -1146,6 +1162,12 @@
     }, 700))
   }
 
+  function getSelectedCountry() {
+    return FILTERS_DATA.country.find(function (country) {
+      return country.value === FILTERS.iso
+    });
+  }
+
   function prefixFiltersForQuery(firstClause, disciplinePrefix, fundingPrefix) {
     var secondClause = 'AND';
     var prefix = Object.assign({}, FILTERS);
@@ -1188,7 +1210,6 @@
 
     return res.rows
       .map(function (row, i) {
-        console.log(row);
         return {
           name: RESEARCHER_TYPES[row.researcher],
           y: row.count,
@@ -1218,9 +1239,7 @@
   function parseResearchersSankeyChartData(res) {
     var rootColor = '#09112d';
     var linkColor = '#7e8fc8';
-    var selectedCountry = FILTERS_DATA.country.find(function (country) {
-      return country.value === FILTERS.iso
-    });
+    var selectedCountry = getSelectedCountry();
     var instituteLinks = _.values(res.rows.map(function (row) {
       return {
         name: INSTITUTES[row.inst_id],
@@ -1247,5 +1266,17 @@
     };
     return { tree: root };
   }
+
+  function parseDynamicSentenceData(res) {
+    var country = FILTERS.iso && getSelectedCountry();
+    var data = Object.assign(res.rows[0], { verb: country ? 'and was' : 'were' });
+    var sentence = _.template('<strong> <%= total_visitors %> </strong> vistors,' +
+      ' from <strong><%= institutes %> </strong> institutes, <%= verb %> granted a total of' +
+      ' <strong> <%= days %> </strong> research days.');
+    if (country) return country.label + ' had' + sentence(data);
+    return sentence(data);
+  }
+
+
 
 }());
