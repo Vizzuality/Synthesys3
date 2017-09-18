@@ -1169,7 +1169,7 @@
         return {
           name: row.gender === 'M' ? 'man' : 'woman',
           y: row.count,
-          color: row.gender === 'M' ? '#51e5b4' : '#13339b'
+          color: row.gender === 'M' ? '#4cc9a0' : '#435caf'
         };
       });
   }
@@ -1184,10 +1184,11 @@
   }
 
   function parseResearcherTypeDonutChartData(res) {
-    var colors = ['#74ebc3', '#4cc9a0', '#b3c3f9', '#7e93d7', '#435caf'];
+    var colors = ['#4cc9a0', '#74ebc3', '#b3c3f9', '#7e93d7', '#435caf'];
 
     return res.rows
       .map(function (row, i) {
+        console.log(row);
         return {
           name: RESEARCHER_TYPES[row.researcher],
           y: row.count,
@@ -1220,14 +1221,23 @@
     var selectedCountry = FILTERS_DATA.country.find(function (country) {
       return country.value === FILTERS.iso
     });
-    var instituteLinks = res.rows.map(function (row) {
+    var instituteLinks = _.values(res.rows.map(function (row) {
       return {
         name: INSTITUTES[row.inst_id],
         parent: selectedCountry,
         value: row.counts,
         level: linkColor
       };
-    });
+    })
+      .reduce(function (acc, next) {
+        var institute = {};
+        institute[next.name] = acc[next.name] ?
+          Object.assign({},
+            acc[next.name],
+            { value: next.value + acc[next.name].value })
+          : next;
+        return Object.assign({}, acc, institute);
+      }, {}));
     var root = {
       name: selectedCountry && selectedCountry.label,
       parent: "null",

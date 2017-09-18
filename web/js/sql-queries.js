@@ -68,7 +68,7 @@ var researchersLineChartQuery = _.template('SELECT synthesys.start_year AS year,
 );
 
 var researcherCountryDonutChartQuery = _.template('WITH gadm28 AS (SELECT the_geom_webmercator, iso2 FROM  gadm28_countries WHERE iso2 = \'<%= iso2 %>\')' +
-  ' SELECT synthesys.researcher AS year, count(*)' +
+  ' SELECT synthesys.researcher, count(*)' +
   ' FROM sanitized_data AS synthesys, gadm28' +
   ' WHERE ST_Intersects(gadm28.the_geom_webmercator, synthesys.the_geom_webmercator)' +
   ' AND synthesys.researcher IS NOT null' +
