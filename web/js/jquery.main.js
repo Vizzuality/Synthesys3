@@ -459,7 +459,7 @@
   }
 
   function initHighcharts() {
-    jQuery('.pie-chart').each(function () {
+    jQuery('.gender-donut-chart').each(function () {
       var query, params;
       if (FILTERS.iso2) {
         params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
@@ -470,93 +470,7 @@
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
         var apiData = parseGenderPieChartData(data);
-        Highcharts.chart({
-          chart: {
-            renderTo: this,
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false,
-            height: 280
-          },
-          title: {
-            text: ''
-          },
-          tooltip: {
-            pointFormat: '{point.percentage:.1f}%',
-            style: {
-              'text-transform': 'uppercase'
-            }
-          },
-          plotOptions: {
-            pie: {
-              dataLabels: {
-                enabled: false
-              },
-              startAngle: 0,
-              endAngle: 360,
-              center: ['50%', '50%'],
-              showInLegend: true,
-              borderWidth: 0,
-              size: 257
-            }
-          },
-          legend: {
-            align: 'left',
-            verticalAlign: 'top',
-            layout: 'vertical',
-            x: -5,
-            y: -2,
-            symbolWidth: 18,
-            symbolHeight: 5,
-            symbolPadding: 13,
-            symbolRadius: 4,
-            itemMarginBottom: 11,
-            squareSymbol: false,
-            floating: true,
-            itemStyle: {
-              'color': '#000016',
-              'cursor': 'pointer',
-              'fontSize': '13px',
-              'fontWeight': 'normal',
-              'textOverflow': 'ellipsis',
-              'text-transform': 'uppercase'
-            }
-          },
-          series: [{
-            type: 'pie',
-            innerSize: '43%',
-            data: [
-              {
-                name: 'woman',
-                y: apiData.female,
-                color: '#13339b'
-              },
-              {
-                name: 'man',
-                y: apiData.male,
-                color: '#51e5b4'
-              }
-            ]
-          }],
-          responsive: {
-            rules: [{
-              condition: {
-                maxWidth: 450
-              },
-              chartOptions: {
-                chart: {
-                  height: 349
-                },
-                plotOptions: {
-                  pie: {
-                    size: 213,
-                    center: ['50%', '57%']
-                  }
-                }
-              }
-            }]
-          }
-        });
+        renderPieChart(this, apiData);
       }.bind(this));
     });
     jQuery('.line-chart').each(function () {
@@ -767,6 +681,19 @@
         });
       });
     });
+    jQuery('.researcher-type-donut-chart').each(function () {
+      var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
+      var query;
+      if (FILTERS.iso2) {
+        query = researcherCountryDonutChartQuery(params).trim();
+      } else {
+        query = researcherDonutChartQuery(params).trim();
+      }
+      $.getJSON(BASE_URL, { q: query }, function (data) {
+        var apiData = parseResearcherTypeDonutChartData(data);
+        renderPieChart(this, apiData);
+      }.bind(this));
+    })
     jQuery('.column-chart').each(function () {
       Highcharts.chart({
         chart: {
@@ -1057,6 +984,85 @@
     jcf.replaceAll();
   }
 
+  function renderPieChart(selector, data) {
+    Highcharts.chart({
+      chart: {
+        renderTo: selector,
+        plotBackgroundColor: null,
+        plotBorderWidth: 0,
+        plotShadow: false,
+        height: 280
+      },
+      title: {
+        text: ''
+      },
+      tooltip: {
+        pointFormat: '{point.percentage:.1f}%',
+        style: {
+          'text-transform': 'uppercase'
+        }
+      },
+      plotOptions: {
+        pie: {
+          dataLabels: {
+            enabled: false
+          },
+          startAngle: 0,
+          endAngle: 360,
+          center: ['50%', '50%'],
+          showInLegend: true,
+          borderWidth: 0,
+          size: 257
+        }
+      },
+      legend: {
+        align: 'left',
+        verticalAlign: 'top',
+        layout: 'vertical',
+        x: -5,
+        y: -2,
+        symbolWidth: 18,
+        symbolHeight: 5,
+        symbolPadding: 13,
+        symbolRadius: 4,
+        itemMarginBottom: 11,
+        squareSymbol: false,
+        floating: true,
+        itemStyle: {
+          'color': '#000016',
+          'cursor': 'pointer',
+          'fontSize': '13px',
+          'fontWeight': 'normal',
+          'textOverflow': 'ellipsis',
+          'text-transform': 'uppercase'
+        }
+      },
+      series: [{
+        type: 'pie',
+        innerSize: '43%',
+        data: data
+      }],
+      responsive: {
+        rules: [{
+          condition: {
+            maxWidth: 450
+          },
+          chartOptions: {
+            chart: {
+              height: 349
+            },
+            plotOptions: {
+              pie: {
+                size: 213,
+                center: ['50%', '57%']
+              }
+            }
+          }
+        }]
+      }
+    });
+  }
+
   function updateFilter(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -1162,14 +1168,12 @@
   function parseGenderPieChartData(res) {
     return res.rows
       .map(function (row) {
-        var obj = {};
-        obj[row.gender] = row.count;
-        return obj;
-      })
-      .reduce(function (acc, next) {
-        if (next.F) return Object.assign({}, acc, { female: next.F });
-        if (next.M) return Object.assign({}, acc, { male: next.M });
-      }, {});
+        return {
+          name: row.gender === 'M' ? 'man' : 'woman',
+          y: row.count,
+          color: row.gender === 'M' ? '#51e5b4' : '#13339b'
+        };
+      });
   }
 
   function parseResearchersLineChartData(res) {
@@ -1179,6 +1183,19 @@
         return row.count;
       })
     };
+  }
+
+  function parseResearcherTypeDonutChartData(res) {
+    var colors = ['#74ebc3', '#4cc9a0', '#b3c3f9', '#7e93d7', '#435caf'];
+
+    return res.rows
+      .map(function (row, i) {
+        return {
+          name: RESEARCHER_TYPES[row.researcher],
+          y: row.count,
+          color: colors[i]
+        }
+      });
   }
 
   function parseInstitutesVisitedTreeChartData(res) {
@@ -1216,4 +1233,5 @@
     };
     return { tree: root };
   }
+
 }());

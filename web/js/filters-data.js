@@ -257,3 +257,11 @@ var INSTITUTES = {
   39: 'University of Amsterdam',
   40: 'University of Copenhagen'
 };
+
+var RESEARCHER_TYPES = {
+  EXP: 'Experienced Researcher',
+  PDOC: 'Postdoctoral Researcher',
+  PGR: 'Postgraduate Researcher',
+  TEC: 'Technician',
+  UND: 'Undergraduate'
+};
