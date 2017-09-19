@@ -42,7 +42,7 @@ var disciplineCountryBubbleChartQuery = _.template('WITH gadm28 AS (SELECT the_g
 var disciplineBubbleChartQuery = _.template('SELECT synthesys.discipline, count(*)' +
   ' FROM sanitized_data AS synthesys' +
   ' WHERE synthesys.discipline IS NOT null' +
-  ' AND synthesys.synth_roun = <%= funding_round %> ' +
+  ' <%= funding_round %>' +
   ' GROUP BY synthesys.discipline' +
   ' ORDER BY count DESC'
 );
