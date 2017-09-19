@@ -2673,7 +2673,6 @@ body {
 .tree-chart .link {
 	fill: none;
 	stroke: transparent;
-	stroke-width: 2px;
 }
 
 @media (min-width: 768px) {
@@ -2952,14 +2951,15 @@ body {
 	}
 
 	.research-box {
-		position: absolute;
+		position: fixed;
 		left: 0;
 		right: 0;
 		bottom: 0;
+    z-index: 1000;
 	}
 
 	.research-box .research-slide .container {
-		padding-top: 17px;
+		padding-top: 30px;
 		padding-bottom: 40px;
 	}
 
@@ -3259,4 +3259,7 @@ body {
 		font-size: 10px;
 	}
 }
-
+
+.is-hidden {
+  display: none;
+}

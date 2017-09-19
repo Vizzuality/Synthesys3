@@ -23,6 +23,7 @@
   <script src="https://d3js.org/d3.v3.min.js" defer></script>
   <!-- include custom JavaScript -->
   <script src="js/filters-data.js" defer></script>
+  <script src="js/sql-queries.js" defer></script>
   <script src="js/jquery.main.js" defer></script>
   <script src="js/lib.js" defer></script>
 </head>
@@ -109,24 +110,23 @@
     <!-- filter info -->
     <div class="filter-info container">
       <div class="text">
-        <p>France had <strong>500</strong> vistors, from <strong>87</strong> institutes, and was
-          granted a total of <strong>6,315</strong> research days.</p>
+        <p class="js-dynamic-sentence"></p>
       </div>
       <div class="charts-block">
         <div class="col">
           <div class="col-holder">
             <div class="chart-heading">
               <h2 class="chart-title">Researchers by Gender</h2>
-              <h3 class="chart-sub-title">France</h3>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
             </div>
-            <div class="pie-chart"></div>
+            <div class="gender-donut-chart"></div>
           </div>
         </div>
         <div class="col">
           <div class="col-holder">
             <div class="chart-heading">
               <h2 class="chart-title">Researchers by Time</h2>
-              <h3 class="chart-sub-title">France</h3>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
             </div>
             <div class="line-chart"></div>
           </div>
@@ -135,7 +135,7 @@
           <div class="col-holder">
             <div class="chart-heading">
               <h2 class="chart-title">Researchers by County</h2>
-              <h3 class="chart-sub-title">France</h3>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
               <div class="chart-info">
                 <span class="square" style="background: #a0b4f7;"></span>
                 <span>earth sciences &amp; environment</span>
@@ -149,7 +149,7 @@
           <div class="col-holder">
             <div class="chart-heading">
               <h2 class="chart-title">Researchers by Discipline</h2>
-              <h3 class="chart-sub-title">France</h3>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
               <div class="chart-info">
                 <span class="square" style="background: #5d77cd;"></span>
                 <span>earth sciences &amp; environment</span>
@@ -164,8 +164,8 @@
         <div class="col">
           <div class="col-holder">
             <div class="chart-heading">
-              <h2 class="chart-title">Papes per Year</h2>
-              <h3 class="chart-sub-title">France</h3>
+              <h2 class="chart-title">Papers per Year</h2>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
             </div>
             <div class="column-chart"></div>
           </div>
@@ -173,13 +173,17 @@
         <div class="col">
           <div class="col-holder">
             <div class="chart-heading">
+              <h2 class="chart-title">Researcher Type</h2>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
+            </div>
+            <div class="researcher-type-donut-chart"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-holder">
+            <div class="chart-heading">
               <h2 class="chart-title">What Collections did the Researchers Access?</h2>
-              <h3 class="chart-sub-title">France</h3>
-              <div class="chart-info">
-                <span class="square" style="background: #435caf;"></span>
-                <span>BELGIUM</span>
-                <b>Institut Royal Des Sciences Naturales de Belgique</b>
-              </div>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
             </div>
             <div class="treemap-chart"></div>
           </div>
@@ -188,7 +192,7 @@
           <div class="col-holder">
             <div class="chart-heading">
               <h2 class="chart-title">Researcher Movement by Region</h2>
-              <h3 class="chart-sub-title">France</h3>
+              <h3 class="chart-sub-title js-country-filter-dependent"></h3>
             </div>
             <div class="tree-chart"></div>
           </div>

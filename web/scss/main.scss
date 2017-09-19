@@ -837,7 +837,7 @@ body{
 		}
 		&:first-child{
 			padding-top: 0;
-			&:before{display: none;}	
+			&:before{display: none;}
 		}
 	}
 }
@@ -1187,19 +1187,12 @@ body{
 	color: $white;
 	overflow: hidden;
 	background:$jacksons-purple;
-	@include media('<tablet') {
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 999;
-	}
-	@include media('>=tablet') {
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: 0;
-	}
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+
 	.research-opener{
 		color: $white;
 		display: block;
@@ -1208,7 +1201,7 @@ body{
 		text-align: center;
 		font-weight: 700;
 		background:$gulf-blue;
-		
+
 		span{
 			display: inline-block;
 			vertical-align: top;
@@ -1743,7 +1736,10 @@ body{
 
 	.link {
 		fill: none;
-		stroke: transparent;
-		stroke-width: 2px;
+		stroke: transparent;+
 	}
+}
+
+.is-hidden {
+  display: none;
 }

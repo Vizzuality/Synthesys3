@@ -213,3 +213,55 @@ var ISO_TO_ISO2 = {
   'SWE': 'SE',
   'TUR': 'TR'
 };
+
+var INSTITUTES = {
+  0: 'Botanischer Garten und Botanisches Museum Collections',
+  1: 'Botanischer Garten und Botanisches Museum Herbarium',
+  2: 'Botanischer Garten und Botanisches Museum Laboratories',
+  3: 'Botanischer Garten und Botanisches Museum Living Collections',
+  4: 'Botanischer Garten und Botanisches Museum Molecular Laboratory',
+  5: 'Botanischer Garten und Botanisches Museum Scanning Electron Microscope facilities',
+  6: 'Consejo Superior de Investigaciones Científicas',
+  7: 'Hungarian Natural History Museum',
+  8: 'Hungarian Natural History Museum Collections',
+  9: 'Hungarian Natural History Museum Computing facilities',
+  10: 'Hungarian Natural History Museum Microscopy facilities',
+  11: 'Hungarian Natural History Museum Molecular Analysis and Microscopy facilities',
+  12: 'Museum National d’Histoire Naturelle Analytical Facilities',
+  13: 'Museum National d’Histoire Naturelle Collections',
+  14: 'Museum National d’Histoire Naturelle Facilities',
+  15: 'Museum National d’Histoire Naturelle Mass Spectrometry facilities',
+  16: 'Museum National d’Histoire Naturelle Molecular Laboratory',
+  17: 'Museum National d’Histoire Naturelle Scanning Electron Microscope facilities',
+  18: 'Museum and Institute of Zoology of the Polish Academy of Sciences',
+  19: 'Museum für Naturkunde Collections',
+  20: 'Museum für Naturkunde Laboratories',
+  21: 'Museum für Naturkunde Mineralogy',
+  22: 'Museum für Naturkunde Palaeontology',
+  23: 'Museum für Naturkunde Zoology',
+  24: 'National Museum Prague',
+  25: 'Natural History Museum London Analytical Facilities',
+  26: 'Natural History Museum London Collections',
+  27: 'Natural History Museum London Collections and Laboratories',
+  28: 'Natural History Museum London Laboratories',
+  29: 'Natural History Museum Vienna',
+  30: 'Naturalis Biodiversity Center',
+  31: 'Naturhistoriska riksmuseet',
+  32: 'Royal Belgian Institute of Natural Sciences',
+  33: 'Royal Botanic Garden Edinburgh',
+  34: 'Royal Botanic Gardens Kew',
+  35: 'Royal Museum of Central Africa',
+  36: 'Senckenberg Gesellschaft für Naturforschung Collections',
+  37: 'Senckenberg Gesellschaft für Naturforschung Laboratories',
+  38: 'State Museum of Natural History Stuttgart',
+  39: 'University of Amsterdam',
+  40: 'University of Copenhagen'
+};
+
+var RESEARCHER_TYPES = {
+  EXP: 'Experienced Researcher',
+  PDOC: 'Postdoctoral Researcher',
+  PGR: 'Postgraduate Researcher',
+  TEC: 'Technician',
+  UND: 'Undergraduate'
+};
