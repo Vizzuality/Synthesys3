@@ -30,83 +30,6 @@
   }
 
   function initSankeyChart() {
-    var treeData = {
-      "name": "FRANCE",
-      "parent": "null",
-      "level": "#09112d",
-      "value": 0,
-      "children": [{
-        "name": "Botanischer Garten und Botanisches M",
-        "parent": "France",
-        "value": 4,
-        "level": "#7e8fc8"
-      },
-        {
-          "name": "Museum National d'Historie Naturelle",
-          "parent": "France",
-          "value": 0
-        },
-        {
-          "name": "Museum für Naturkunde Laboratories",
-          "parent": "France",
-          "value": 0
-        },
-        {
-          "name": "Botanischer Garten und Botanisches M",
-          "parent": "France",
-          "value": 0
-        },
-        {
-          "name": "Museum National d'Historie Naturelle",
-          "parent": "France",
-          "value": 60,
-          "level": "#7e8fc8"
-        },
-        {
-          "name": "Museum für Naturkunde Laboratories",
-          "parent": "France",
-          "value": 0
-        },
-        {
-          "name": "Museum für Naturkunde Laboratories",
-          "parent": "France",
-          "value": 0
-        }, {
-          "name": "Botanischer Garten und Botanisches M",
-          "parent": "France",
-          "value": 0
-        },
-        {
-          "name": "Museum National d'Historie Naturelle",
-          "parent": "France",
-          "value": 12,
-          "level": "#7e8fc8"
-        }]
-    };
-    var mobileTreeDataObj = {
-      "name": "FRANCE",
-      "parent": "null",
-      "level": "#09112d",
-      "value": 0,
-      "children": [{
-        "name": "Botanischer Garten und Botanisches M",
-        "parent": "France",
-        "value": 2,
-        "level": "#7e8fc8"
-      },
-        {
-          "name": "Museum National d'Historie Naturelle",
-          "parent": "France",
-          "value": 60,
-          "level": "#7e8fc8"
-        },
-        {
-          "name": "Museum National d'Historie Naturelle",
-          "parent": "France",
-          "value": 12,
-          "level": "#7e8fc8"
-        }]
-    };
     jQuery('.tree-chart').each(function () {
       var chartsHolder = jQuery(this);
 
@@ -254,209 +177,219 @@
         });
       }
 
-      var query = researchersSankeyChartQuery(FILTERS).trim();
-      $.getJSON(BASE_URL, { q: query }, function (data) {
-        var apiData = parseResearchersSankeyChartData(data);
-        ResponsiveHelper.addRange({
-          '768..': {
-            on: function () {
-              drawChart(apiData.tree, {
-                textWidth: 200,
-                varticalSpacing: 79,
-                leftOffset: 18
-              });
+      if (FILTERS.iso) {
+        chartsHolder.parent().parent().removeClass('is-hidden');
+        var query = researchersSankeyChartQuery(FILTERS).trim();
+        $.getJSON(BASE_URL, { q: query }, function (data) {
+          var apiData = parseResearchersSankeyChartData(data);
+          ResponsiveHelper.addRange({
+            '768..': {
+              on: function () {
+                drawChart(apiData.tree, {
+                  textWidth: 200,
+                  varticalSpacing: 79,
+                  leftOffset: 18
+                });
+              }
+            },
+            '..767': {
+              on: function () {
+                drawChart(apiData.tree, {
+                  textWidth: 90,
+                  varticalSpacing: 70,
+                  leftOffset: 12
+                });
+              }
             }
-          },
-          '..767': {
-            on: function () {
-              drawChart(apiData.tree, {
-                textWidth: 90,
-                varticalSpacing: 70,
-                leftOffset: 12
-              });
-            }
-          }
-        });
-      }.bind(this));
+          });
+        }.bind(this));
+      } else {
+        chartsHolder.closest('.col').addClass('is-hidden');
+      }
     });
   }
 
   function initBubbleChart() {
-    var isIE = window.navigator.msPointerEnabled;
-    var isTouchDevice = /Windows Phone/.test(navigator.userAgent) || ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
-    jQuery('.bubbles-chart').each(function () {
-      var holder = jQuery(this);
-      d3.selection.prototype.moveToFront = function () {
-        return this.each(function () {
-          this.parentNode.appendChild(this);
-        });
-      };
-      d3.selection.prototype.delegate = function (event, targetselector, handler) {
-        var self = this;
-        return this.on(event, function () {
-          var eventTarget = d3.event.target.parentNode,
-            target = self.selectAll(targetselector);
-          target.each(function () {
-            if (eventTarget === this) {
-              handler.call(eventTarget, eventTarget.__data__);
-            }
-          });
-        });
-      };
-      var diameter = 400,
-        format = d3.format(",d"),
-        color = ['#435caf', '#7e93d7', '#b3c3f9', '#e6ebfd', '#5bcba6', '#74ebc3', '#a1ecd3', '#d3f9ec'],
-        fillIndex = 0,
-        strokeIndex = 0;
-      var bubble = d3.layout.pack()
-        .sort(null)
-        .size([diameter, diameter])
-        .padding(0);
-      var chart = d3.select('.' + holder.attr('class'));
-      var svg = chart.append("svg")
-        .attr("width", diameter)
-        .attr("height", diameter)
-        .attr("viewBox", "0 0 " + (diameter + 50) + " " + (diameter + 50) + "")
-        .attr("class", "bubble");
-      var defs = svg.append("defs");
-      var filter = defs.append("filter")
-        .attr("id", "circle-shadow")
-        .attr("height", "150%");
-      filter.append("feGaussianBlur")
-        .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 2)
-        .attr("result", "blur");
-      filter.append("feOffset")
-        .attr("in", "blur")
-        .attr("dx", 0)
-        .attr("dy", 0)
-        .attr("result", "offsetBlur");
-      var feMerge = filter.append("feMerge");
-      feMerge.append("feMergeNode")
-        .attr("in", "offsetBlur");
-      feMerge.append("feMergeNode")
-        .attr("in", "SourceGraphic");
-      d3.json(holder.data('src'), function (error, root) {
-        var node = svg.selectAll(".node")
-          .data(
-            bubble
-              .nodes(classes(root))
-              .filter(function (d) {
-                return !d.children;
+      var isIE = window.navigator.msPointerEnabled;
+      var isTouchDevice = /Windows Phone/.test(navigator.userAgent) || ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
+      jQuery('.bubbles-chart').each(function () {
+        var holder = jQuery(this);
+        if (!FILTERS.discipline) {
+          holder.closest('.col').removeClass('is-hidden');
+          d3.selection.prototype.moveToFront = function () {
+            return this.each(function () {
+              this.parentNode.appendChild(this);
+            });
+          };
+          d3.selection.prototype.delegate = function (event, targetselector, handler) {
+            var self = this;
+            return this.on(event, function () {
+              var eventTarget = d3.event.target.parentNode,
+                target = self.selectAll(targetselector);
+              target.each(function () {
+                if (eventTarget === this) {
+                  handler.call(eventTarget, eventTarget.__data__);
+                }
+              });
+            });
+          };
+          var diameter = 400,
+            format = d3.format(",d"),
+            color = ['#435caf', '#7e93d7', '#b3c3f9', '#e6ebfd', '#5bcba6', '#74ebc3', '#a1ecd3', '#d3f9ec'],
+            fillIndex = 0,
+            strokeIndex = 0;
+          var bubble = d3.layout.pack()
+            .sort(null)
+            .size([diameter, diameter])
+            .padding(0);
+          var chart = d3.select('.' + holder.attr('class'));
+          var svg = chart.append("svg")
+            .attr("width", diameter)
+            .attr("height", diameter)
+            .attr("viewBox", "0 0 " + (diameter + 50) + " " + (diameter + 50) + "")
+            .attr("class", "bubble");
+          var defs = svg.append("defs");
+          var filter = defs.append("filter")
+            .attr("id", "circle-shadow")
+            .attr("height", "150%");
+          filter.append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", 2)
+            .attr("result", "blur");
+          filter.append("feOffset")
+            .attr("in", "blur")
+            .attr("dx", 0)
+            .attr("dy", 0)
+            .attr("result", "offsetBlur");
+          var feMerge = filter.append("feMerge");
+          feMerge.append("feMergeNode")
+            .attr("in", "offsetBlur");
+          feMerge.append("feMergeNode")
+            .attr("in", "SourceGraphic");
+          d3.json(holder.data('src'), function (error, root) {
+            var node = svg.selectAll(".node")
+              .data(
+                bubble
+                  .nodes(classes(root))
+                  .filter(function (d) {
+                    return !d.children;
+                  })
+              )
+              .enter()
+              .append("g")
+              .attr("class", "node")
+              .attr("transform", function (d) {
+                  var y = d.y + 20;
+                  return "translate(" + d.x + "," + y + ")";
+                }
+              );
+            node.append("circle")
+              .attr("r", function (d) {
+                return d.r;
               })
-          )
-          .enter()
-          .append("g")
-          .attr("class", "node")
-          .attr("transform", function (d) {
-              var y = d.y + 20;
-              return "translate(" + d.x + "," + y + ")";
-            }
-          );
-        node.append("circle")
-          .attr("r", function (d) {
-            return d.r;
-          })
-          .style("fill", function (d, i) {
-            var counter = i - color.length * fillIndex;
-            if (counter >= color.length - 1) {
-              fillIndex++;
-            }
-            return color[counter];
-          });
-        node.append("circle")
-          .attr("class", 'hover-circle')
-          .attr("r", function (d) {
-            return d.r + 20;
-          })
-          .style("fill", 'transparent')
-          .style("stroke", function (d, i) {
-            var counter = i - color.length * strokeIndex;
-            if (counter >= color.length - 1) {
-              strokeIndex++;
-            }
-            return color[counter];
-          });
-        node.append("text")
-          .attr("dy", ".3em")
-          .style("text-anchor", "middle")
-          .style("fill", "#fff")
-          .text(function (d) {
-            return drawText(d.value);
-          });
-        if (isIE) {
-          var addEvents = function addEvents(self) {
-            jQuery(self).off('mouseenter').on('mouseenter', function () {
-              d3.select(self).select("circle")
-                .attr("class", "selected_circle");
-              jQuery('.node').each(function () {
+              .style("fill", function (d, i) {
+                var counter = i - color.length * fillIndex;
+                if (counter >= color.length - 1) {
+                  fillIndex++;
+                }
+                return color[counter];
+              });
+            node.append("circle")
+              .attr("class", 'hover-circle')
+              .attr("r", function (d) {
+                return d.r + 20;
+              })
+              .style("fill", 'transparent')
+              .style("stroke", function (d, i) {
+                var counter = i - color.length * strokeIndex;
+                if (counter >= color.length - 1) {
+                  strokeIndex++;
+                }
+                return color[counter];
+              });
+            node.append("text")
+              .attr("dy", ".3em")
+              .style("text-anchor", "middle")
+              .style("fill", "#fff")
+              .text(function (d) {
+                return drawText(d.value);
+              });
+            if (isIE) {
+              var addEvents = function addEvents(self) {
+                jQuery(self).off('mouseenter').on('mouseenter', function () {
+                  d3.select(self).select("circle")
+                    .attr("class", "selected_circle");
+                  jQuery('.node').each(function () {
+                    var n = jQuery(this);
+                    n.one('mouseenter', function () {
+                      svg[0][0].appendChild(this);
+                      addEvents(this);
+                    });
+                  });
+                });
+                jQuery(self).off('mouseleave').on('mouseleave', function () {
+                  d3.select(self).select("circle")
+                    .attr("class", "default_circle");
+                });
+              }
+              jQuery(node[0]).each(function () {
                 var n = jQuery(this);
                 n.one('mouseenter', function () {
                   svg[0][0].appendChild(this);
                   addEvents(this);
                 });
               });
-            });
-            jQuery(self).off('mouseleave').on('mouseleave', function () {
-              d3.select(self).select("circle")
-                .attr("class", "default_circle");
-            });
+              jQuery(svg[0]).on('mouseleave', function () {
+                jQuery('.node').each(function () {
+                  d3.select(this).select("circle")
+                    .attr("class", "default_circle");
+                });
+              });
+            } else {
+              node.on(isTouchDevice ? "click" : 'mouseenter', function (d) {
+                d3.select(this).select("circle")
+                  .attr("class", "selected_circle");
+                svg[0][0].appendChild(this);
+              });
+              node.on("mouseleave", function (d) {
+                d3.select(this).select("circle")
+                  .attr("class", "default_circle");
+              });
+            }
+          });
+
+          function classes(root) {
+            var classes = [];
+
+            function recurse(name, node) {
+              if (node.children) {
+                node.children.forEach(function (child) {
+                  recurse(node.name, child);
+                });
+              } else {
+                classes.push({ packageName: name, className: node.name, value: node.size });
+              }
+            }
+
+            recurse(null, root);
+            return { children: classes };
           }
-          jQuery(node[0]).each(function () {
-            var n = jQuery(this);
-            n.one('mouseenter', function () {
-              svg[0][0].appendChild(this);
-              addEvents(this);
-            });
-          });
-          jQuery(svg[0]).on('mouseleave', function () {
-            jQuery('.node').each(function () {
-              d3.select(this).select("circle")
-                .attr("class", "default_circle");
-            });
-          });
+
+          function drawText(num) {
+          var arr = (num + '').split('').reverse(),
+            sepationNumber = [];
+          for (var i = 0, l = arr.length; i < l; i++) {
+            if (i !== 0 && i % 3 === 0) {
+              sepationNumber.push('.');
+            }
+            sepationNumber.push(arr[i]);
+          }
+          return sepationNumber.reverse().join('');
+        }
         } else {
-          node.on(isTouchDevice ? "click" : 'mouseenter', function (d) {
-            d3.select(this).select("circle")
-              .attr("class", "selected_circle");
-            svg[0][0].appendChild(this);
-          });
-          node.on("mouseleave", function (d) {
-            d3.select(this).select("circle")
-              .attr("class", "default_circle");
-          });
+          holder.closest('.col').addClass('is-hidden');
         }
       });
-
-      function classes(root) {
-        var classes = [];
-
-        function recurse(name, node) {
-          if (node.children) {
-            node.children.forEach(function (child) {
-              recurse(node.name, child);
-            });
-          } else {
-            classes.push({ packageName: name, className: node.name, value: node.size });
-          }
-        }
-
-        recurse(null, root);
-        return { children: classes };
-      }
-
-      function drawText(num) {
-        var arr = (num + '').split('').reverse(),
-          sepationNumber = [];
-        for (var i = 0, l = arr.length; i < l; i++) {
-          if (i !== 0 && i % 3 === 0) {
-            sepationNumber.push('.');
-          }
-          sepationNumber.push(arr[i]);
-        }
-        return sepationNumber.reverse().join('');
-      }
-    });
   }
 
   function initHighcharts() {
@@ -937,7 +870,7 @@
       params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       query = dynamicSentenceCountryQuery(params).trim();
     } else {
-      params = prefixFiltersForQuery('WHERE', 'discipline like', 'funding_ro like');
+      params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       query = dynamicSenteceQuery(params).trim();
     }
     $.getJSON(BASE_URL, { q: query }, function (data) {
@@ -1099,9 +1032,9 @@
     if (typeof data === 'undefined') {
       data = e.currentTarget.value;
     }
-    $('*[data-filter-value="' + type + '"]').html(label);
-    el.closest('.autocomplete, .auto-active').removeClass('auto-active');
     if (type === 'country') {
+      $('*[data-filter-value="' + type + '"]').html(label);
+      el.closest('.autocomplete, .auto-active').removeClass('auto-active');
       FILTERS.iso = data;
       FILTERS.iso2 = ISO_TO_ISO2[data];
       $('.js-country-filter-dependent').each(function () {
@@ -1292,7 +1225,5 @@
     if (country) return country.label + ' had' + sentence(data);
     return sentence(data);
   }
-
-
 
 }());

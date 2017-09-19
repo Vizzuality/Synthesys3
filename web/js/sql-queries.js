@@ -131,7 +131,6 @@ var papersPerYearBarChartQuery = _.template('SELECT year, count(title)' +
   ' ORDER BY year'
 );
 
-
 var dynamicSentenceCountryQuery = _.template('WITH gadm28 AS (SELECT the_geom_webmercator, iso2 FROM  gadm28_countries WHERE iso2 = \'<%= iso2 %>\')' +
   ' SELECT COUNT(DISTINCT(synthesys.home_insti)) as institutes,' +
   ' COUNT(synthesys.visit_days) AS total_visitors,' +
