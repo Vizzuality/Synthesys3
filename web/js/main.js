@@ -275,7 +275,6 @@
           .attr("in", "offsetBlur");
         feMerge.append("feMergeNode")
           .attr("in", "SourceGraphic");
-
         $.getJSON(BASE_URL, { q: query }, function (data) {
           var root = parseDisciplineBubbleChartData(data);
           var node = svg.selectAll(".node")
@@ -332,7 +331,6 @@
             .text(function (d) {
               return d.className;
             });
-
           if (isIE) {
             var addEvents = function addEvents(self) {
               jQuery(self).off('mouseenter').on('mouseenter', function () {
@@ -599,38 +597,47 @@
       }.bind(this));
     });
     jQuery('.map-chart').each(function () {
+      var query;
+      if (FILTERS.iso2) {
+        query = choroplethCountryQuery(FILTERS).trim();
+      } else if (FILTERS.funding_round) {
+        var params = prefixFiltersForQuery('AND','', 'synthesys.synth_roun =');
+        query = choroplethFundingRoundQuery(params).trim();
+      } else {
+        query = choroplethQuery(FILTERS).trim();
+      }
       var holder = jQuery(this);
-      jQuery.getJSON(holder.data('geo-src'), function (geojson) {
+      jQuery.getJSON(BASE_URL, { q: query, format: 'geojson' }, function (geojson) {
+        var polygons = Highcharts.geojson(geojson);
+        var mapData = parseChoroplethMapChartData(polygons);
         Highcharts.mapChart({
           chart: {
             renderTo: holder[0],
-            height: 330
+            height: 600
           },
           title: {
             text: ''
           },
           plotOptions: {
             map: {
-              allAreas: false,
-              joinBy: ['hc-key', 'value'],
-              mapData: geojson.geo,
+              allAreas: true,
               borderColor: '#fff'
-            },
-            series: {
-              showInLegend: false,
-              states: {
-                hover: {
-                  borderWidth: 2,
-                  brightness: 0
-                }
-              }
             }
           },
           tooltip: {
             headerFormat: '',
-            pointFormat: '{point.name}: <b>{series.name}</b>'
+            pointFormat: '{point.properties.discipline} <b>{point.properties.count}</b>'
           },
-          series: geojson.series
+          series: [{
+            data: mapData,
+            showInLegend: false,
+            states: {
+              hover: {
+                borderWidth: 2,
+                brightness: 0
+              }
+            }
+          }]
         });
       });
     });
@@ -1248,7 +1255,20 @@
   function parseDisciplineBubbleChartData(res) {
     return {
       name: 'Root',
-      children: res.rows.map(function (row) { return { name: row.discipline, size: row.count } })
+      children: res.rows.map(function (row) {
+        return { name: row.discipline, size: row.count }
+      })
     }
+  }
+
+  function parseChoroplethMapChartData(polygons) {
+    var domain = polygons.map(function (polygon) { return polygon.properties.count });
+    var colors = ['#6f93f1', '#3751b4', '#2c46b7', '#1c2c8c', '#142672'];
+    var getColor = d3.scale.quantile()
+      .domain(domain)
+      .range(colors);
+    return polygons.map(function (polygon) {
+      return Object.assign({}, polygon, { color: getColor(polygon.properties.count)});
+    });
   }
 }());
