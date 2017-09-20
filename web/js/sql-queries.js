@@ -7,12 +7,12 @@ var choroplethCountryQuery = _.template('WITH gadm28 as (select the_geom FROM ga
 
 var choroplethFundingRoundQuery = _.template('WITH gadm28 AS (SELECT the_geom, iso2 as iso FROM  gadm28_countries' +
   ' WHERE gadm28_countries.iso2 != \'GF\')' +
-  ' SELECT gadm28.the_geom, gadm28.iso, COUNT(synthesys.home_insti) AS count' +
+  ' SELECT gadm28.the_geom, gadm28.iso, synthesys.discipline, COUNT(synthesys.home_insti) AS count' +
   ' FROM  sanitized_data AS synthesys, gadm28' +
   ' WHERE ST_Intersects(gadm28.the_geom, synthesys.the_geom)' +
   ' AND synthesys.discipline IS NOT null' +
   ' <%= funding_round %>' +
-  ' GROUP BY gadm28.the_geom, gadm28.iso');
+  ' GROUP BY gadm28.the_geom, synthesys.discipline, gadm28.iso');
 
 var choroplethQuery = _.template('WITH gadm28 AS (SELECT the_geom, the_geom_webmercator, iso2 as iso FROM  gadm28_countries' +
   ' WHERE gadm28_countries.iso2 != \'GF\')' +
