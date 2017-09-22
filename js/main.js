@@ -1,6 +1,7 @@
 (function () {
   "use strict";
-  var _env = 'debug';
+  // FIXME: use env variables instead => http://harpjs.com/docs/development/globals
+  var _env = 'production';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
   var TABLE_MAX_SIZE = 2;
@@ -15,8 +16,8 @@
     },
     table: {
       rows: [],
-      total: 0,
-      current: 0,
+      total_pages: 0,
+      current: 0, // TODO: update this key on pagination clicks and call renderTable();
       orderBy: null,
       sortOrder: 'asc'
     }
@@ -42,6 +43,8 @@
   });
 
   // lifecycle
+
+  // This is meant to be called only once
   function init() {
     setFilters();
     setCountrySearch();
@@ -52,6 +55,7 @@
     initTableHeader();
   }
 
+  // This is meant to be called everytime a filter changes
   function render() {
     initDynamicSentence();
     initHighcharts();
@@ -1096,8 +1100,11 @@
       query = publicationTableQuery(params).trim();
     }
     $.getJSON(BASE_URL, { q: query }, function (data) {
-      var payload = {};
-      payload.rows = orderTableData(data.rows, _state.table);
+      var payload = {
+        rows: orderTableData(data.rows, _state.table),
+        totalPages: Math.ceil(data.total_rows/TABLE_MAX_SIZE)
+      };
+
       _setTable(payload);
       renderTable();
     });
@@ -1159,6 +1166,7 @@
     $('.js-filter-restore').click(restoreFilters);
   }
 
+  // TODO: instead of adding another filter the behaviour should be to replace existing filters
   function setFilter(filter, data) {
     if (!data) return;
     data.forEach(function (item) {
