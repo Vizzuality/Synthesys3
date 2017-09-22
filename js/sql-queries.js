@@ -168,4 +168,27 @@ var researchersSankeyChartQuery = _.template('with gadm28 as (SELECT the_geom_we
   ' ORDER BY inst_id'
 );
 
-// TODO Publication Tables
+var publicationsCountryTableQuery = _.template('SELECT year as Year, authors as Authors, title as Title,' +
+  ' volume as Volume, pages as Pages, publisher as Publisher, url as URL' +
+  ' FROM publications' +
+  ' WHERE iso = \'<%= iso %>\'' +
+  ' AND publicationstatus = \'Published\'' +
+  ' AND year != \'1914\'' +
+  ' AND year != \'1990\'' +
+  ' And year != \'201\'' +
+  ' And year != \'no_data\'' +
+  ' ORDER BY year'
+);
+
+var publicationTableQuery = _.template('SELECT year as Year, authors as Authors, title as Title,' +
+  ' volume as Volume, pages as Pages, publisher as Publisher, url as URL' +
+  ' FROM publications' +
+  ' WHERE publicationstatus = \'Published\'' +
+  ' <%= discipline %>' +
+  ' <%= funding_round %>' +
+  ' AND year != \'1914\'' +
+  ' AND year != \'1990\'' +
+  ' And year != \'201\'' +
+  ' And year != \'no_data\'' +
+  ' ORDER BY year'
+);

@@ -1,18 +1,47 @@
 (function () {
   "use strict";
+  var _env = 'debug';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
-  var FILTERS = {
-    discipline: '',
-    funding_round: '',
-    iso: '',
-    iso2: ''
+  var TABLE_MAX_SIZE = 2;
+
+  // initial state
+  var _state = {
+    filters: {
+      discipline: '',
+      funding_round: '',
+      iso: '',
+      iso2: ''
+    },
+    table: {
+      rows: [],
+      total: 0,
+      current: 0,
+      orderBy: null,
+      sortOrder: 'asc'
+    }
   };
-  jQuery(function () {
+
+  // side-effects
+  function _setFilters(payload) {
+    var prevState = Object.assign({}, _state);
+    _state.filters = Object.assign({}, _state.filters, payload);
+    devTools('SET_FILTERS', payload, prevState);
+  }
+
+  function _setTable(payload) {
+    var prevState = Object.assign({}, _state);
+    _state.table = Object.assign({}, _state.table, payload);
+    devTools('SET_TABLE', payload, prevState);
+  }
+
+  // main
+  $(function () {
     init();
     render();
   });
 
+  // lifecycle
   function init() {
     setFilters();
     setCountrySearch();
@@ -20,6 +49,7 @@
     initMobileNav();
     initCarousel();
     initCustomForms();
+    initTableHeader();
   }
 
   function render() {
@@ -28,15 +58,71 @@
     initBubbleChart();
     initSankeyChart();
     initBubbleChart();
+    initTableBody();
   }
 
+  // General inits
+  function initSlickCarousel() {
+    $('.info-slider').slick({
+      slidesToShow: 3,
+      arrows: false,
+      infinite: false,
+      responsive: [{
+        breakpoint: 768,
+        settings: {
+          slidesToScroll: 1,
+          slidesToShow: 1
+        }
+      }]
+    });
+  }
+
+  function initMobileNav() {
+    $('body').mobileNav({
+      menuActiveClass: 'nav-active',
+      menuOpener: '.nav-opener'
+    });
+    $('body').mobileNav({
+      menuActiveClass: 'filter-active',
+      menuOpener: '.filter-by'
+    });
+    $('body').mobileNav({
+      menuActiveClass: 'research-active',
+      menuOpener: '.research-opener'
+    });
+    $('.autocomplete').mobileNav({
+      menuActiveClass: 'auto-active',
+      menuOpener: '.opener',
+      hideOnClickOutside: true,
+      menuDrop: '.drop'
+    });
+  }
+
+  function initCarousel() {
+    $('.testimonial-slider').scrollGallery({
+      mask: '.mask',
+      slider: '.slideset',
+      slides: '.slide',
+      stretchSlideToMask: true
+    });
+  }
+
+  function initCustomForms() {
+    jcf.setOptions('Select', {
+      wrapNative: false,
+      wrapNativeOnMobile: false,
+    });
+    jcf.replaceAll();
+  }
+
+  // Overview inits
   function initSankeyChart() {
-    jQuery('.tree-chart').each(function () {
-      var chartsHolder = jQuery(this);
+    $('.tree-chart').each(function () {
+      var chartsHolder = $(this);
 
       function drawChart(data, obj) {
         chartsHolder.empty();
-        var chartBlock = jQuery('<div class="chart-block">').appendTo(chartsHolder);
+        var chartBlock = $('<div class="chart-block">').appendTo(chartsHolder);
         var margin = {
             top: 20,
             right: 120,
@@ -114,7 +200,7 @@
           })
           .attr("d", diagonal);
         resize();
-        jQuery(window)
+        $(window)
           .off('resize', resize)
           .on('resize', resize);
 
@@ -169,7 +255,7 @@
               line = [word];
               ++lineNumber;
               tspan = text.append("tspan").attr("x", function (d) {
-                  return d.children || d._children ? -leftOffset : leftOffset;
+ return d.children || d._children ? -leftOffset : leftOffset;
                 })
                 .attr("y", 0)
                 .attr("dy", lineNumber * lineHeight + dy + "em").text(word);
@@ -178,27 +264,27 @@
         });
       }
 
-      if (FILTERS.iso) {
+      if (_state.filters.iso) {
         chartsHolder.parent().parent().removeClass('is-hidden');
-        var query = researchersSankeyChartQuery(FILTERS).trim();
+        var query = researchersSankeyChartQuery(_state.filters).trim();
         $.getJSON(BASE_URL, { q: query }, function (data) {
           var apiData = parseResearchersSankeyChartData(data);
           ResponsiveHelper.addRange({
             '768..': {
               on: function () {
                 drawChart(apiData.tree, {
-                  textWidth: 200,
-                  varticalSpacing: 79,
-                  leftOffset: 18
+ textWidth: 200,
+ varticalSpacing: 79,
+ leftOffset: 18
                 });
               }
             },
             '..767': {
               on: function () {
                 drawChart(apiData.tree, {
-                  textWidth: 90,
-                  varticalSpacing: 70,
-                  leftOffset: 12
+ textWidth: 90,
+ varticalSpacing: 70,
+ leftOffset: 12
                 });
               }
             }
@@ -214,16 +300,16 @@
     var isIE = window.navigator.msPointerEnabled;
     var isTouchDevice = /Windows Phone/.test(navigator.userAgent) || ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
     var query;
-    if (FILTERS.iso2) {
-      query = disciplineCountryBubbleChartQuery(FILTERS).trim();
+    if (_state.filters.iso2) {
+      query = disciplineCountryBubbleChartQuery(_state.filters).trim();
     } else {
       var params = prefixFiltersForQuery('AND', '', 'synthesys.synth_roun =');
       query = disciplineBubbleChartQuery(params).trim();
     }
-    jQuery('.bubbles-chart').each(function () {
-      var holder = jQuery(this);
+    $('.bubbles-chart').each(function () {
+      var holder = $(this);
       holder.empty();
-      if (!FILTERS.discipline) {
+      if (!_state.filters.discipline) {
         holder.closest('.col').removeClass('is-hidden');
         d3.selection.prototype.moveToFront = function () {
           return this.each(function () {
@@ -282,7 +368,7 @@
               bubble
                 .nodes(classes(root))
                 .filter(function (d) {
-                  return !d.children;
+ return !d.children;
                 })
             )
             .enter()
@@ -333,33 +419,33 @@
             });
           if (isIE) {
             var addEvents = function addEvents(self) {
-              jQuery(self).off('mouseenter').on('mouseenter', function () {
+              $(self).off('mouseenter').on('mouseenter', function () {
                 d3.select(self).select("circle")
-                  .attr("class", "selected_circle");
-                jQuery('.node').each(function () {
-                  var n = jQuery(this);
-                  n.one('mouseenter', function () {
-                    svg[0][0].appendChild(this);
-                    addEvents(this);
-                  });
+ .attr("class", "selected_circle");
+                $('.node').each(function () {
+ var n = $(this);
+ n.one('mouseenter', function () {
+   svg[0][0].appendChild(this);
+   addEvents(this);
+ });
                 });
               });
-              jQuery(self).off('mouseleave').on('mouseleave', function () {
+              $(self).off('mouseleave').on('mouseleave', function () {
                 d3.select(self).select("circle")
-                  .attr("class", "default_circle");
+ .attr("class", "default_circle");
               });
             }
-            jQuery(node[0]).each(function () {
-              var n = jQuery(this);
+            $(node[0]).each(function () {
+              var n = $(this);
               n.one('mouseenter', function () {
                 svg[0][0].appendChild(this);
                 addEvents(this);
               });
             });
-            jQuery(svg[0]).on('mouseleave', function () {
-              jQuery('.node').each(function () {
+            $(svg[0]).on('mouseleave', function () {
+              $('.node').each(function () {
                 d3.select(this).select("circle")
-                  .attr("class", "default_circle");
+ .attr("class", "default_circle");
               });
             });
           } else {
@@ -410,9 +496,9 @@
   }
 
   function initHighcharts() {
-    jQuery('.gender-donut-chart').each(function () {
+    $('.gender-donut-chart').each(function () {
       var query, params;
-      if (FILTERS.iso2) {
+      if (_state.filters.iso2) {
         params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
         query = genderCountryPieChartQuery(params).trim();
       } else {
@@ -424,11 +510,11 @@
         renderPieChart(this, apiData);
       }.bind(this));
     });
-    jQuery('.line-chart').each(function () {
-      var holder = jQuery(this);
+    $('.line-chart').each(function () {
+      var holder = $(this);
       var query;
       var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
-      if (FILTERS.iso2) {
+      if (_state.filters.iso2) {
         query = researchersCountryLineChartQuery(params).trim();
       } else {
         query = researchersLineChartQuery(params).trim();
@@ -500,14 +586,14 @@
             area: {
               fillColor: {
                 linearGradient: {
-                  x1: 0,
-                  y1: 0,
-                  x2: 0,
-                  y2: 1
+ x1: 0,
+ y1: 0,
+ x2: 0,
+ y2: 1
                 },
                 stops: [
-                  [0, 'rgba(0,0,126, 0.3)'],
-                  [1, 'rgba(0,0,126, 0)']
+ [0, 'rgba(0,0,126, 0.3)'],
+ [1, 'rgba(0,0,126, 0)']
                 ]
               },
               pointStart: apiData.yearStart,
@@ -523,21 +609,21 @@
                 lineColor: '#000080',
                 lineWidth: 2,
                 states: {
-                  hover: {
-                    radiusPlus: 0,
-                    lineWidthPlus: 0
-                  }
+ hover: {
+   radiusPlus: 0,
+   lineWidthPlus: 0
+ }
                 }
               }
             },
             series: {
               states: {
                 hover: {
-                  lineWidth: 2,
-                  halo: {
-                    opacity: 0.25,
-                    size: 14
-                  }
+ lineWidth: 2,
+ halo: {
+   opacity: 0.25,
+   size: 14
+ }
                 }
               }
             }
@@ -555,28 +641,28 @@
               },
               chartOptions: {
                 chart: {
-                  height: 163,
-                  marginLeft: 31
+ height: 163,
+ marginLeft: 31
                 },
                 yAxis: {
-                  labels: {
-                    style: {
-                      'color': '#274194',
-                      'font-size': '9px'
-                    },
-                    x: -6,
-                    y: 3
-                  }
+ labels: {
+   style: {
+     'color': '#274194',
+     'font-size': '9px'
+   },
+   x: -6,
+   y: 3
+ }
                 },
                 xAxis: {
-                  labels: {
-                    style: {
-                      'color': '#68759c',
-                      'font-size': '9px',
-                      'font-weight': 'bold'
-                    },
-                    y: 15
-                  }
+ labels: {
+   style: {
+     'color': '#68759c',
+     'font-size': '9px',
+     'font-weight': 'bold'
+   },
+   y: 15
+ }
                 }
               }
             }]
@@ -596,18 +682,19 @@
         });
       }.bind(this));
     });
-    jQuery('.map-chart').each(function () {
-      var query;
-      if (FILTERS.iso2) {
-        query = choroplethCountryQuery(FILTERS).trim();
-      } else if (FILTERS.funding_round) {
-        var params = prefixFiltersForQuery('AND','', 'synthesys.synth_roun =');
+    $('.map-chart').each(function () {
+      var query, params;
+      if (_state.filters.iso2) {
+        query = choroplethCountryQuery(_state.filters).trim();
+      } else if (_state.filters.funding_round) {
+        params = prefixFiltersForQuery('AND','', 'synthesys.synth_roun =');
         query = choroplethFundingRoundQuery(params).trim();
       } else {
-        query = choroplethQuery(FILTERS).trim();
+        params = prefixFiltersForQuery('AND', 'synthesys.discipline =', '');
+        query = choroplethQuery(params).trim();
       }
-      var holder = jQuery(this);
-      jQuery.getJSON(BASE_URL, { q: query, format: 'geojson' }, function (geojson) {
+      var holder = $(this);
+      $.getJSON(BASE_URL, { q: query, format: 'geojson' }, function (geojson) {
         var polygons = Highcharts.geojson(geojson);
         var mapData = parseChoroplethMapChartData(polygons);
         Highcharts.mapChart({
@@ -641,10 +728,10 @@
         });
       });
     });
-    jQuery('.researcher-type-donut-chart').each(function () {
+    $('.researcher-type-donut-chart').each(function () {
       var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       var query;
-      if (FILTERS.iso2) {
+      if (_state.filters.iso2) {
         query = researcherCountryDonutChartQuery(params).trim();
       } else {
         query = researcherDonutChartQuery(params).trim();
@@ -659,10 +746,10 @@
         });
       }.bind(this));
     })
-    jQuery('.column-chart').each(function () {
+    $('.column-chart').each(function () {
       var query;
-      if (FILTERS.iso) {
-        query = papersPerYearCountryBarChartQuery(FILTERS).trim();
+      if (_state.filters.iso) {
+        query = papersPerYearCountryBarChartQuery(_state.filters).trim();
       } else {
         var params = prefixFiltersForQuery('AND', 'discipline like', '');
         query = papersPerYearBarChartQuery(params).trim();
@@ -719,15 +806,15 @@
             series: {
               color: {
                 linearGradient: {
-                  x1: 0,
-                  y1: 0,
-                  x2: 0,
-                  y2: 1
+ x1: 0,
+ y1: 0,
+ x2: 0,
+ y2: 1
                 },
                 stops: [
-                  [0, 'rgba(37, 89, 194, 1)'],
-                  [1, 'rgba(28, 56, 148, 1)']
-                ],
+ [0, 'rgba(37, 89, 194, 1)'],
+ [1, 'rgba(28, 56, 148, 1)']
+                ]
               },
               groupPadding: 0,
               pointPadding: 0.2,
@@ -748,24 +835,24 @@
               },
               chartOptions: {
                 chart: {
-                  height: 225
+ height: 225
                 },
                 yAxis: {
-                  labels: {
-                    style: {
-                      'font-size': '9px'
-                    },
-                    x: -7,
-                    y: 10
-                  }
+ labels: {
+   style: {
+     'font-size': '9px'
+   },
+   x: -7,
+   y: 10
+ }
                 },
                 xAxis: {
-                  labels: {
-                    style: {
-                      'font-size': '9px'
-                    },
-                    y: 10
-                  }
+ labels: {
+   style: {
+     'font-size': '9px'
+   },
+   y: 10
+ }
                 }
               }
             }]
@@ -773,11 +860,11 @@
         });
       }.bind(this));
     });
-    jQuery('.treemap-chart').each(function () {
-      var holder = jQuery(this);
+    $('.treemap-chart').each(function () {
+      var holder = $(this);
       var query;
       var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
-      if (FILTERS.iso2) {
+      if (_state.filters.iso2) {
         query = institutesVisitedCountryTreeChartQuery(params).trim();
       } else {
         query = institutesVisitedTreeChartQuery(params).trim();
@@ -873,17 +960,17 @@
               },
               chartOptions: {
                 chart: {
-                  height: 154
+ height: 154
                 },
                 legend: {
-                  enabled: false
+ enabled: false
                 }
               }
             }]
           }
         }, function (chart) {
           if (chart.legend.box) {
-            jQuery(chart.legend.box.parentGroup.div).css('top', chart.clipBox.height + 15);
+            $(chart.legend.box.parentGroup.div).css('top', chart.clipBox.height + 15);
           }
         });
       }.bind(this));
@@ -892,7 +979,7 @@
 
   function initDynamicSentence() {
     var query, params;
-    if (FILTERS.iso2) {
+    if (_state.filters.iso2) {
       params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       query = dynamicSentenceCountryQuery(params).trim();
     } else {
@@ -903,63 +990,6 @@
       var sentence = parseDynamicSentenceData(data);
       $('.js-dynamic-sentence').html(sentence);
     }.bind(this));
-  }
-
-// slick init
-  function initSlickCarousel() {
-    jQuery('.info-slider').slick({
-      slidesToShow: 3,
-      arrows: false,
-      infinite: false,
-      responsive: [{
-        breakpoint: 768,
-        settings: {
-          slidesToScroll: 1,
-          slidesToShow: 1
-        }
-      }]
-    });
-  }
-
-// mobile menu init
-  function initMobileNav() {
-    jQuery('body').mobileNav({
-      menuActiveClass: 'nav-active',
-      menuOpener: '.nav-opener'
-    });
-    jQuery('body').mobileNav({
-      menuActiveClass: 'filter-active',
-      menuOpener: '.filter-by'
-    });
-    jQuery('body').mobileNav({
-      menuActiveClass: 'research-active',
-      menuOpener: '.research-opener'
-    });
-    jQuery('.autocomplete').mobileNav({
-      menuActiveClass: 'auto-active',
-      menuOpener: '.opener',
-      hideOnClickOutside: true,
-      menuDrop: '.drop'
-    });
-  }
-
-// scroll gallery init
-  function initCarousel() {
-    jQuery('.testimonial-slider').scrollGallery({
-      mask: '.mask',
-      slider: '.slideset',
-      slides: '.slide',
-      stretchSlideToMask: true
-    });
-  }
-
-// initialize custom form elements
-  function initCustomForms() {
-    jcf.setOptions('Select', {
-      wrapNative: false,
-      wrapNativeOnMobile: false,
-    });
-    jcf.replaceAll();
   }
 
   function renderPieChart(selector, data, options) {
@@ -1047,9 +1077,37 @@
     });
   }
 
+  function initTableHeader() {
+    var sortList = Array.prototype.slice.call($('.js-table-sort'))
+      sortList.forEach(function (sort) {
+      $(sort).click(onSortTable);
+    });
+  }
+
+  function initTableBody() {
+    var tableContent = $('.js-table-body');
+    tableContent.html('');
+
+    var query;
+    if (_state.filters.iso) {
+      query = publicationsCountryTableQuery(_state.filters).trim();
+    } else {
+      var params = prefixFiltersForQuery('AND', 'discipline =', 'synthround =');
+      query = publicationTableQuery(params).trim();
+    }
+    $.getJSON(BASE_URL, { q: query }, function (data) {
+      var payload = {};
+      payload.rows = orderTableData(data.rows, _state.table);
+      _setTable(payload);
+      renderTable();
+    });
+  }
+
+  // Filters
   function updateFilter(e) {
     e.preventDefault();
     e.stopPropagation();
+    var payload = {};
     var el = $(e.currentTarget);
     var type = el.data('filter-type');
     var data = el.data('value');
@@ -1060,13 +1118,15 @@
     if (type === 'country') {
       $('*[data-filter-value="' + type + '"]').html(label);
       el.closest('.autocomplete, .auto-active').removeClass('auto-active');
-      FILTERS.iso = data;
-      FILTERS.iso2 = ISO_TO_ISO2[data];
+      payload.iso = data;
+      payload.iso2 = ISO_TO_ISO2[data];
+      _setFilters(payload);
       $('.js-country-filter-dependent').each(function () {
         this.textContent = data && label;
       });
     } else {
-      FILTERS[type] = data;
+      payload[type] = data;
+      _setFilters(payload)
     }
     render();
   };
@@ -1075,7 +1135,7 @@
     var filters = Array.prototype.slice.call($('.js-filter'));
     filters.forEach(function (filter) {
       var type = $(filter).data('filter-type');
-      if (FILTERS[type] || (FILTERS.iso && type === 'country')) {
+      if (_state.filters[type] || (_state.filters.iso && type === 'country')) {
         if (type !== 'country') {
           $(filter).val('').trigger('change');
         } else {
@@ -1132,29 +1192,84 @@
     }, 700))
   }
 
+  // Table
+  function onSortTable(e) {
+    var payload = {};
+    var orderKey = $(e.currentTarget).data('orderby');
+    function toggleSortOrder() {
+      return _state.table.sortOrder === 'asc' ? 'desc' : 'asc';
+    }
+
+    payload.sortOrder = !_state.table.orderBy || _state.table.orderBy === orderKey ? toggleSortOrder() : 'asc';
+    payload.orderBy = orderKey;
+    payload.rows = orderTableData(_state.table.rows, payload);
+    _setTable(payload);
+
+    renderTable();
+  }
+
+  function orderTableData(data, options) {
+    return options.orderBy ? _.orderBy(data, [options.orderBy], [options.sortOrder]) : data;
+  }
+
+  function mapDataToTableMarkup(data) {
+    var tableRow = _.template(
+      '<tr>' +
+      '  <td class="col1"><%= year %></td>' +
+      '  <td class="col2"><%= title %></td>' +
+      '  <td class="col3">' +
+      '    <p><%= publisher %></p>' +
+      '    <a href="<%= url %>" class="more <% if(url === \'no_data\') print(\'is-hidden\')%>">Go to Paper</a>' +
+      '  </td>' +
+      '  <td class="col4"><%= authors %></td>' +
+      '  <td class="col5"><%= volume %></td>' +
+      '  <td class="col6"><%= pages %></td>' +
+      '</tr>'
+    );
+
+    return data.map(function (row) { return tableRow(row) });
+  }
+
+  function getTablePage(rows, index, maxSize) {
+    return rows.slice(index, index + maxSize);
+  }
+
+  function renderTable() {
+    var page = getTablePage(_state.table.rows, _state.table.current, TABLE_MAX_SIZE);
+    var markup = mapDataToTableMarkup(page);
+
+    $('.js-table-body').html(markup);
+  }
+
+  // Utils
   function getSelectedCountry() {
     return FILTERS_DATA.country.find(function (country) {
-      return country.value === FILTERS.iso
+      return country.value === _state.filters.iso
     });
   }
 
   function prefixFiltersForQuery(firstClause, disciplinePrefix, fundingPrefix) {
     var secondClause = 'AND';
-    var prefix = Object.assign({}, FILTERS);
-    if (FILTERS.discipline) {
-      prefix = Object.assign({}, FILTERS, {
-        discipline: firstClause + ' ' + disciplinePrefix + ' \'' + FILTERS.discipline + '\'',
-        funding_round: FILTERS.funding_round && secondClause + ' ' + fundingPrefix + ' \'' + FILTERS.funding_round + '\''
+    var prefix = Object.assign({}, _state.filters);
+    if (_state.filters.discipline) {
+      prefix = Object.assign({}, _state.filters, {
+        discipline: firstClause + ' ' + disciplinePrefix + ' \'' + _state.filters.discipline + '\'',
+        funding_round: _state.filters.funding_round && secondClause + ' ' + fundingPrefix + ' \'' + _state.filters.funding_round + '\''
       });
     }
-    if (!FILTERS.discipline && FILTERS.funding_round) {
-      prefix = Object.assign({}, FILTERS, {
-        funding_round: firstClause + ' ' + fundingPrefix + ' \'' + FILTERS.funding_round + '\''
+    if (!_state.filters.discipline && _state.filters.funding_round) {
+      prefix = Object.assign({}, _state.filters, {
+        funding_round: firstClause + ' ' + fundingPrefix + ' \'' + _state.filters.funding_round + '\''
       });
     }
     return prefix;
   }
 
+  function devTools(type, payload, prevState) {
+    if (_env === 'debug') console.info(type, { payload: payload, state: _state, prevState: prevState });
+  }
+
+  // Parsers
   function parseGenderPieChartData(res) {
     return res.rows
       .map(function (row) {
@@ -1239,7 +1354,7 @@
   }
 
   function parseDynamicSentenceData(res) {
-    var country = FILTERS.iso && getSelectedCountry();
+    var country = _state.filters.iso && getSelectedCountry();
     var data = Object.assign(res.rows[0], { verb: country ? 'and was' : 'were' });
     var sentence = _.template('<strong> <%= total_visitors %> </strong>' +
       '  <% if (total_visitors > 1) print ("visitors"); else print("visitor") %>,' +
@@ -1271,4 +1386,5 @@
       return Object.assign({}, polygon, { color: getColor(polygon.properties.count)});
     });
   }
+
 }());
