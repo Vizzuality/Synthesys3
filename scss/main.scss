@@ -1192,6 +1192,7 @@ body{
   right: 0;
   bottom: 0;
   z-index: 999;
+  height: calc(100% - 80px);
 
 	.research-opener{
 		color: $white;
@@ -1223,10 +1224,12 @@ body{
 		}
 	}
 	.research-slide{
+    height: 100%;
 		.container{
 			padding-top: 25px;
 			padding-bottom: 16px;
 			max-width: 990px;
+      height: 100%;
 			@include media('>=tablet') {
 				padding-top: 17px;
 				padding-bottom: 40px;
@@ -1280,6 +1283,7 @@ body{
 	.table-holder{
 		overflow: auto;
 		margin: 0 0 20px;
+    max-height: 250px;
 	}
 	table{
 		font-size: 13px;
@@ -1322,7 +1326,11 @@ body{
 			float: right;
 			font-size: 13px;
 			color: $turquoise;
-			&:hover{opacity: 0.80;}
+      background-color: transparent;
+      border: 0;
+      outline: none;
+
+			&:hover{opacity: 0.40;}
 		}
 		.more{
 			color: $turquoise;
@@ -1736,7 +1744,7 @@ body{
 
 	.link {
 		fill: none;
-		stroke: transparent;+
+		stroke: transparent;
 	}
 }
 

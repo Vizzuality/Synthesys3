@@ -212,52 +212,35 @@
               <table>
                 <thead>
                 <tr>
-                  <th class="col1"><span>Year</span> <a href="#" class="sort"><i
-                      class="icon-arrow-combo"></i></a></th>
-                  <th class="col2"><span>Title</span> <a href="#" class="sort"><i
-                      class="icon-arrow-combo"></i></a></th>
-                  <th class="col3"><span>Publisher</span> <a href="#" class="sort"><i
-                      class="icon-arrow-combo"></i></a></th>
-                  <th class="col4"><span>Author</span> <a href="#" class="sort"><i
-                      class="icon-arrow-combo"></i></a></th>
+                  <th class="col1">
+                    <span>Year</span>
+                    <button class="sort js-table-sort" data-orderby="year">
+                      <i class="icon-arrow-combo"></i>
+                    </button>
+                  </th>
+                  <th class="col2">
+                    <span>Title</span>
+                    <button class="sort js-table-sort" data-orderby="title">
+                      <i class="icon-arrow-combo"></i>
+                    </button>
+                  </th>
+                  <th class="col3">
+                    <span>Publisher</span>
+                    <button class="sort js-table-sort" data-orderby="publisher">
+                      <i class="icon-arrow-combo"></i>
+                    </button>
+                  </th>
+                  <th class="col4">
+                    <span>Author</span>
+                    <button class="sort js-table-sort" data-orderby="authors">
+                      <i class="icon-arrow-combo"></i>
+                    </button>
+                  </th>
                   <th class="col5"><span>Volume</span></th>
                   <th class="col6"><span>Pages</span></th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                  <td class="col1">2007</td>
-                  <td class="col2">Sponge Biodiversity of RathLin Island</td>
-                  <td class="col3">
-                    <p>Journal of the Marine Biological Association of the UK</p>
-                    <a href="#" class="more">Go to Paper</a>
-                  </td>
-                  <td class="col4">Picton.B.E. and Goodwin.C.E.</td>
-                  <td class="col5">40A</td>
-                  <td class="col6">1641 -1458</td>
-                </tr>
-                <tr>
-                  <td class="col1">2007</td>
-                  <td class="col2">Sponge Biodiversity of RathLin Island</td>
-                  <td class="col3">
-                    <p>Journal of the Marine Biological Association of the UK</p>
-                  </td>
-                  <td class="col4">Picton.B.E. and Goodwin.C.E.</td>
-                  <td class="col5">40A</td>
-                  <td class="col6">1641 -1458</td>
-                </tr>
-                <tr>
-                  <td class="col1">2007</td>
-                  <td class="col2">Sponge Biodiversity of RathLin Island</td>
-                  <td class="col3">
-                    <p>Journal of the Marine Biological Association of the UK</p>
-                    <a href="#" class="more">Go to Paper</a>
-                  </td>
-                  <td class="col4">Picton.B.E. and Goodwin.C.E.</td>
-                  <td class="col5">40A</td>
-                  <td class="col6">1641 -1458</td>
-                </tr>
-                </tbody>
+                <tbody class="js-table-body"></tbody>
               </table>
             </div>
             <!-- paging area -->
