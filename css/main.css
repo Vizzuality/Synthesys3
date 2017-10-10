@@ -2051,16 +2051,16 @@ body {
       .research-box table td p {
         margin: 0 10px 5px 0; }
     .research-box table .col1 {
-      width: 120px; }
+      width: 80px; }
     .research-box table .col2 {
-      width: 152px; }
+      width: 382px; }
     .research-box table .col3 {
-      width: 292px;
+      width: 152px;
       font-weight: 700; }
     .research-box table .col4 {
       width: 185px; }
     .research-box table .col5 {
-      width: 100px; }
+      width: 50px; }
     .research-box table .sort {
       float: right;
       font-size: 13px;
