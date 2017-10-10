@@ -152,10 +152,10 @@
           links = tree.links(nodes);
         nodes.forEach(function (d, ind) {
           if (ind === 0) {
-            d.x = obj.varticalSpacing;
+            d.x = obj.verticalSpacing;
             d.y = 0;
           } else {
-            d.x = ind * obj.varticalSpacing;
+            d.x = ind * obj.verticalSpacing;
             d.y = holder[0][0].clientWidth - 400;
           }
           if (d.x > maxHeight) {
@@ -189,7 +189,9 @@
             return d.name;
           })
           .style("fill-opacity", 1)
-          .call(wrap, obj.textWidth, obj.leftOffset);
+          .style("cursor", "pointer")
+          .call(wrap, obj.textWidth, obj.leftOffset)
+          .on("click", function(d) { window.open(d.href); });
         var link = g.selectAll("path.link")
           .data(links, function (d) {
             return d.target.id;
@@ -200,7 +202,7 @@
             return d.target.level;
           })
           .style("stroke-width", function (d) {
-            return d.target.value;
+            return d.target.value / 2;
           })
           .attr("d", diagonal);
         resize();
@@ -277,18 +279,18 @@
             '768..': {
               on: function () {
                 drawChart(apiData.tree, {
- textWidth: 200,
- varticalSpacing: 79,
- leftOffset: 18
+                  textWidth: 200,
+                  verticalSpacing: 40,
+                  leftOffset: 18
                 });
               }
             },
             '..767': {
               on: function () {
                 drawChart(apiData.tree, {
- textWidth: 90,
- varticalSpacing: 70,
- leftOffset: 12
+                  textWidth: 90,
+                  verticalSpacing: 49,
+                  leftOffset: 12
                 });
               }
             }
@@ -1344,7 +1346,8 @@
           name: INSTITUTES[row.inst_id],
           parent: selectedCountry,
           value: row.counts,
-          level: linkColor
+          level: linkColor,
+          href: INSTITUTES_META[row.inst_id]
         };
       })
       .reduce(function (acc, next) {

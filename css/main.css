@@ -2386,7 +2386,10 @@ body {
     font-size: 16px; }
   .tree-chart .link {
     fill: none;
-    stroke: transparent; }
+    stroke: transparent;
+    stroke-opacity: 0.5; }
+    .tree-chart .link:hover {
+      stroke-opacity: 1; }
 
 .is-hidden {
   display: none; }
