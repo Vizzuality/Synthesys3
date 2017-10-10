@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   // FIXME: use env variables instead => http://harpjs.com/docs/development/globals
-  var _env = 'production';
+  var _env = 'debug';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
   var TABLE_MAX_SIZE = 2;
@@ -1134,6 +1134,11 @@
     } else {
       payload[type] = data;
       _setFilters(payload)
+      if (type === 'discipline') {
+        $('.js-discipline-filter-dependent').each(function () {
+          this.textContent = data;
+        });
+      }
     }
     render();
   };
