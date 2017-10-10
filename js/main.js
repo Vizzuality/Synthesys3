@@ -1394,7 +1394,7 @@
     }, {}));
 
     var domain = polygons.map(function (polygon) { return polygon.properties.count });
-    var colors = ['#6f93f1', '#3751b4', '#2c46b7', '#1c2c8c', '#142672'];
+    var colors = ['#6f93f1', '#6f93f1', '#3751b4', '#2c46b7', '#1c2c8c', '#142672'];
     var colorScale = d3.scale.quantile()
       .domain(domain)
       .range(colors);
