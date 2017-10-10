@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   // FIXME: use env variables instead => http://harpjs.com/docs/development/globals
-  var _env = 'production';
+  var _env = 'debug';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
   var TABLE_MAX_SIZE = 2;
@@ -465,7 +465,7 @@
           }
         }.bind(this));
 
-        function classes(root) {
+        var classes = function classes(root) {
           var classes = [];
 
           function recurse(name, node) {
@@ -482,7 +482,7 @@
           return { children: classes };
         }
 
-        function drawText(num) {
+        var drawText = function drawText(num) {
           var arr = (num + '').split('').reverse(),
             sepationNumber = [];
           for (var i = 0, l = arr.length; i < l; i++) {
@@ -590,14 +590,14 @@
             area: {
               fillColor: {
                 linearGradient: {
- x1: 0,
- y1: 0,
- x2: 0,
- y2: 1
+                  x1: 0,
+                  y1: 0,
+                  x2: 0,
+                  y2: 1
                 },
                 stops: [
- [0, 'rgba(0,0,126, 0.3)'],
- [1, 'rgba(0,0,126, 0)']
+                  [0, 'rgba(0,0,126, 0.3)'],
+                  [1, 'rgba(0,0,126, 0)']
                 ]
               },
               pointStart: apiData.yearStart,
@@ -613,21 +613,21 @@
                 lineColor: '#000080',
                 lineWidth: 2,
                 states: {
- hover: {
-   radiusPlus: 0,
-   lineWidthPlus: 0
- }
+                  hover: {
+                    radiusPlus: 0,
+                    lineWidthPlus: 0
+                  }
                 }
               }
             },
             series: {
               states: {
                 hover: {
- lineWidth: 2,
- halo: {
-   opacity: 0.25,
-   size: 14
- }
+                  lineWidth: 2,
+                  halo: {
+                    opacity: 0.25,
+                    size: 14
+                  }
                 }
               }
             }
@@ -645,28 +645,28 @@
               },
               chartOptions: {
                 chart: {
- height: 163,
- marginLeft: 31
+                  height: 163,
+                  marginLeft: 31
                 },
                 yAxis: {
- labels: {
-   style: {
-     'color': '#274194',
-     'font-size': '9px'
-   },
-   x: -6,
-   y: 3
- }
+                  labels: {
+                    style: {
+                      'color': '#274194',
+                      'font-size': '9px'
+                    },
+                    x: -6,
+                    y: 3
+                  }
                 },
                 xAxis: {
- labels: {
-   style: {
-     'color': '#68759c',
-     'font-size': '9px',
-     'font-weight': 'bold'
-   },
-   y: 15
- }
+                  labels: {
+                    style: {
+                      'color': '#68759c',
+                      'font-size': '9px',
+                      'font-weight': 'bold'
+                    },
+                    y: 15
+                  }
                 }
               }
             }]
@@ -717,7 +717,7 @@
           },
           tooltip: {
             headerFormat: '',
-            pointFormat: '{point.properties.discipline} <b>{point.properties.count}</b>'
+            pointFormat: 'Number of visitors: <b>{point.properties.count}</b>'
           },
           series: [{
             data: mapData,
@@ -1134,6 +1134,11 @@
     } else {
       payload[type] = data;
       _setFilters(payload)
+      if (type === 'discipline') {
+        $('.js-discipline-filter-dependent').each(function () {
+          this.textContent = data;
+        });
+      }
     }
     render();
   };
@@ -1282,7 +1287,7 @@
     return res.rows
       .map(function (row) {
         return {
-          name: row.gender === 'M' ? 'man' : 'woman',
+          name: row.gender === 'M' ? 'male' : 'female',
           y: row.count,
           color: row.gender === 'M' ? '#4cc9a0' : '#435caf'
         };
@@ -1384,14 +1389,29 @@
     }
   }
 
-  function parseChoroplethMapChartData(polygons) {
+  function parseChoroplethMapChartData(res) {
+    var polygons = _.values(res.reduce(function (acc, next) {
+      var groupBy = next.properties.cartodb_id;
+      var current = {};
+      current[groupBy] = Object.assign({}, next);
+      current[groupBy].properties.count += acc[groupBy] ? acc[groupBy].properties.count : 0;
+      return Object.assign({}, acc, current);
+    }, {}));
+
     var domain = polygons.map(function (polygon) { return polygon.properties.count });
-    var colors = ['#6f93f1', '#3751b4', '#2c46b7', '#1c2c8c', '#142672'];
-    var getColor = d3.scale.quantile()
+    var colors = ['#6f93f1', '#6f93f1', '#3751b4', '#2c46b7', '#1c2c8c', '#142672'];
+    var colorScale = d3.scale.quantile()
       .domain(domain)
       .range(colors);
+    var getColor = function getColor(count) {
+      if (count === 0) return '#b1b1b1';
+      return colorScale(count);
+    };
+
     return polygons.map(function (polygon) {
-      return Object.assign({}, polygon, { color: getColor(polygon.properties.count)});
+      var result = Object.assign({}, polygon, { color: getColor(polygon.properties.count) });
+      if (result.properties.count === 0) result.properties.count = 'N/A';
+      return result;
     });
   }
 
