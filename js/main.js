@@ -465,7 +465,7 @@
           }
         }.bind(this));
 
-        function classes(root) {
+        var classes = function classes(root) {
           var classes = [];
 
           function recurse(name, node) {
@@ -482,7 +482,7 @@
           return { children: classes };
         }
 
-        function drawText(num) {
+        var drawText = function drawText(num) {
           var arr = (num + '').split('').reverse(),
             sepationNumber = [];
           for (var i = 0, l = arr.length; i < l; i++) {
@@ -1282,7 +1282,7 @@
     return res.rows
       .map(function (row) {
         return {
-          name: row.gender === 'M' ? 'man' : 'woman',
+          name: row.gender === 'M' ? 'male' : 'female',
           y: row.count,
           color: row.gender === 'M' ? '#4cc9a0' : '#435caf'
         };
