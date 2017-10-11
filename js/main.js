@@ -1275,10 +1275,8 @@
     var showRightDots = _state.table.current + PAGE_JUMP_SIZE <= _state.table.totalPages;
     var pagesRange = isLastPage ? -1 * (PAGE_JUMP_SIZE + 1) : (PAGE_JUMP_SIZE + 1);
 
-    debugger;
     var tablePages = _.range(pagesRange)
       .map(function (element) {
-        debugger;
         var page = isLastPage ? _state.table.pageEnd : _state.table.pageStart;
         return page + element;
       }.bind(this));
