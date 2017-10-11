@@ -1367,9 +1367,6 @@ body{
 		}
 		&.prev{
 			left: 0;
-			@include media('>=tablet') {
-				display: none;
-			}
 		}
 		&.next{
 			right: 0;

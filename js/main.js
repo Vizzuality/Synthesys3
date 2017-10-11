@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   // FIXME: use env variables instead => http://harpjs.com/docs/development/globals
-  var _env = 'debug';
+  var _env = 'production';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
   var TABLE_MAX_SIZE = 7;
@@ -1268,6 +1268,7 @@
 
   function setTablePagination() {
     var el = $('.js-table-pagination');
+    // var prevButton = $('.js-pagination-prev').click()
     el.html('');
 
     var isLastPage = _state.table.current === _state.table.totalPages;
@@ -1286,6 +1287,7 @@
     }
 
     if (showLeftDots) {
+
       var leftDots = tablePages[0] - 1;
       tablePages.unshift(leftDots);
       tablePages.unshift(0);
