@@ -1449,6 +1449,10 @@
   function parseDynamicSentenceData(res) {
     var country = _state.filters.iso && getSelectedCountry();
     var data = Object.assign(res.rows[0], { verb: country ? 'and was' : 'were' });
+    var formatted = Object.assign({}, data, {
+      total_visitors: data.total_visitors.toLocaleString('en-US'),
+      days: data.days.toLocaleString('en-US')
+    });
     var sentence = _.template('<strong> <%= total_visitors %> </strong>' +
       '  <% if (total_visitors > 1) print ("visitors"); else print("visitor") %>,' +
       ' from <strong><%= institutes %> </strong>' +
@@ -1456,8 +1460,8 @@
       ' <%= verb %> granted a total of' +
       ' <strong> <%= days %> </strong> research' +
       ' <% if (days > 1) print ("days"); else print("day") %>.');
-    if (country) return country.label + ' had' + sentence(data);
-    return sentence(data);
+    if (country) return country.label + ' had' + sentence(formatted);
+    return sentence(formatted);
   }
 
   function parseDisciplineBubbleChartData(res) {

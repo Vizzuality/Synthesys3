@@ -2053,7 +2053,7 @@ body {
     .research-box table .col1 {
       width: 80px; }
     .research-box table .col2 {
-      width: 382px; }
+      width: 292px; }
     .research-box table .col3 {
       width: 152px;
       font-weight: 700; }
@@ -2094,14 +2094,10 @@ body {
     bottom: 0; }
     @media (min-width: 768px) {
       .paging-area .btn-default {
-        display: inline-block;
         vertical-align: middle;
         position: static; } }
     .paging-area .btn-default.prev {
       left: 0; }
-      @media (min-width: 768px) {
-        .paging-area .btn-default.prev {
-          display: none; } }
     .paging-area .btn-default.next {
       right: 0; }
 
