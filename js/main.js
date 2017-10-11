@@ -4,7 +4,8 @@
   var _env = 'debug';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
-  var TABLE_MAX_SIZE = 2;
+  var TABLE_MAX_SIZE = 7;
+  var PAGE_JUMP_SIZE = 5;
 
   // initial state
   var _state = {
@@ -16,8 +17,10 @@
     },
     table: {
       rows: [],
-      total_pages: 0,
+      totalPages: 0,
       current: 0, // TODO: update this key on pagination clicks and call renderTable();
+      pageStart: 0,
+      pageEnd: PAGE_JUMP_SIZE,
       orderBy: null,
       sortOrder: 'asc'
     }
@@ -1104,11 +1107,12 @@
     $.getJSON(BASE_URL, { q: query }, function (data) {
       var payload = {
         rows: orderTableData(data.rows, _state.table),
-        totalPages: Math.ceil(data.total_rows/TABLE_MAX_SIZE)
+        totalPages: Math.floor((data.total_rows - 1)/TABLE_MAX_SIZE)
       };
 
       _setTable(payload);
       renderTable();
+      setTablePagination();
     });
   }
 
@@ -1245,8 +1249,81 @@
     return data.map(function (row) { return tableRow(row) });
   }
 
+  function onClickNextPage(e) {
+    var index = $(e.currentTarget).data('page-index');
+    var payload = { current: index };
+
+    if (index < _state.table.pageStart) {
+      var start = index - PAGE_JUMP_SIZE;
+      payload.pageStart = (start > 0) ? start : 0;
+      payload.pageEnd = (start > 0) ? index : PAGE_JUMP_SIZE;
+    } else if (index > _state.table.pageEnd) {
+      payload.pageStart = (index < _state.table.totalPages) ? index : index - PAGE_JUMP_SIZE;
+      payload.pageEnd = (index < _state.table.totalPages) ? index + PAGE_JUMP_SIZE : index;
+    }
+    _setTable(payload);
+    renderTable();
+    setTablePagination();
+  }
+
+  function setTablePagination() {
+    var el = $('.js-table-pagination');
+    el.html('');
+
+    var isLastPage = _state.table.current === _state.table.totalPages;
+    var showLeftDots = _state.table.current > PAGE_JUMP_SIZE;
+    var showRightDots = _state.table.current + PAGE_JUMP_SIZE <= _state.table.totalPages;
+    var pagesRange = isLastPage ? -1 * (PAGE_JUMP_SIZE + 1) : (PAGE_JUMP_SIZE + 1);
+
+    debugger;
+    var tablePages = _.range(pagesRange)
+      .map(function (element) {
+        debugger;
+        var page = isLastPage ? _state.table.pageEnd : _state.table.pageStart;
+        return page + element;
+      }.bind(this));
+
+    if (isLastPage) {
+      tablePages = tablePages.reverse();
+    }
+
+    if (showLeftDots) {
+      var leftDots = tablePages[0] - 1;
+      tablePages.unshift(leftDots);
+      tablePages.unshift(0);
+    }
+
+    if (showRightDots) {
+      var rightDots = tablePages[tablePages.length - 1] + 1;
+      tablePages.push(rightDots);
+      tablePages.push(_state.table.totalPages);
+    }
+
+    var markup = tablePages
+      .map(function (pageIndex, i, list) {
+        var showDots = function (i, list) {
+          var left = showLeftDots && (i === 1);
+          var right = showRightDots && (i === list.length - 2);
+          return left || right;
+        }.bind(this);
+        var label =  showDots(i, list) ? '...' : pageIndex + 1;
+        var page = $('<li><a>' + label + '</a></li>');
+        page.first()
+          .toggleClass('active', _state.table.current === pageIndex)
+          .click(onClickNextPage)
+          .attr('data-page-index', pageIndex);
+        return page;
+      }.bind(this))
+      .reduce(function (acc, next) {
+        acc.appendChild(next[0]);
+        return acc;
+      }, document.createDocumentFragment());
+
+    el.html(markup);
+  }
+
   function getTablePage(rows, index, maxSize) {
-    return rows.slice(index, index + maxSize);
+    return rows.slice(index * maxSize, (index * maxSize) + maxSize);
   }
 
   function renderTable() {
