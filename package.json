@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Synthesis3",
   "scripts": {
-    "start": "harp server --port $PORT",
+    "dev": "harp server --port $PORT",
+    "start": "NODE_ENV=production harp server --port $PORT",
     "sass": "node-sass --include-path scss scss/main.scss css/main.css"
   },
   "dependencies": {

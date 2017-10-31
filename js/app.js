@@ -1,7 +1,5 @@
 (function () {
   "use strict";
-  // FIXME: use env variables instead => http://harpjs.com/docs/development/globals
-  var _env = 'debug';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
   var TABLE_MAX_SIZE = 7;
@@ -49,7 +47,7 @@
 
   // This is meant to be called only once
   function init() {
-    if (_env === 'debug') console.debug('INIT');
+    if (window._env === 'development') console.debug('INIT');
     initFilters();
     initCountrySearch();
     initTableHeader();
@@ -57,7 +55,7 @@
 
   // This is meant to be called everytime a filter changes
   function render() {
-    if (_env === 'debug') console.debug('RENDER');
+    if (window._env === 'development') console.debug('RENDER');
     initDynamicSentence();
     initHighcharts();
     initBubbleChart();
@@ -1373,7 +1371,7 @@
   }
 
   function devTools(type, payload, prevState) {
-    if (_env === 'debug') console.debug(type, { payload: payload, state: _state, prevState: prevState });
+    if (window._env === 'development') console.debug(type, { payload: payload, state: _state, prevState: prevState });
   }
 
   // Parsers
