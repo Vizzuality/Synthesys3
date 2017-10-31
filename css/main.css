@@ -2120,7 +2120,7 @@ body {
     @media (min-width: 768px) {
       .paging li {
         padding: 0 13px; } }
-    .paging li.active a {
+    .paging li .-active {
       color: #fff;
       pointer-events: none;
       border-color: #51e5b4; }

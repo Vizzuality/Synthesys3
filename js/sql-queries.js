@@ -6,7 +6,7 @@ var choroplethCountryQuery = _.template('WITH gadm28 as (SELECT cartodb_id, the_
 );
 
 var choroplethFundingRoundQuery = _.template('WITH gadm28 AS (SELECT cartodb_id, the_geom, iso2 as iso FROM  gadm28_countries' +
-  ' WHERE gadm28_countries.iso2 != \'GF\')' +
+  ' WHERE gadm28_countries.iso2  NOT IN (\'GF\', \'RU\', \'SJ\')' +
   ' SELECT gadm28.cartodb_id, gadm28.the_geom, gadm28.iso, synthesys.discipline, COUNT(synthesys.home_insti) AS count' +
   ' FROM  sanitized_data AS synthesys RIGHT JOIN gadm28' +
   ' ON ST_Intersects(gadm28.the_geom, synthesys.the_geom)' +

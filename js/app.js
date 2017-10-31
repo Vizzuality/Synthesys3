@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   // FIXME: use env variables instead => http://harpjs.com/docs/development/globals
-  var _env = 'production';
+  var _env = 'debug';
   var $ = jQuery;
   var BASE_URL = 'https://synthesys.carto.com/api/v2/sql';
   var TABLE_MAX_SIZE = 7;
@@ -51,10 +51,6 @@
   function init() {
     setFilters();
     setCountrySearch();
-    initSlickCarousel();
-    initMobileNav();
-    initCarousel();
-    initCustomForms();
     initTableHeader();
   }
 
@@ -68,61 +64,6 @@
     initTableBody();
   }
 
-  // General inits
-  function initSlickCarousel() {
-    $('.info-slider').slick({
-      slidesToShow: 3,
-      arrows: false,
-      infinite: false,
-      responsive: [{
-        breakpoint: 768,
-        settings: {
-          slidesToScroll: 1,
-          slidesToShow: 1
-        }
-      }]
-    });
-  }
-
-  function initMobileNav() {
-    $('body').mobileNav({
-      menuActiveClass: 'nav-active',
-      menuOpener: '.nav-opener'
-    });
-    $('body').mobileNav({
-      menuActiveClass: 'filter-active',
-      menuOpener: '.filter-by'
-    });
-    $('body').mobileNav({
-      menuActiveClass: 'research-active',
-      menuOpener: '.research-opener'
-    });
-    $('.autocomplete').mobileNav({
-      menuActiveClass: 'auto-active',
-      menuOpener: '.opener',
-      hideOnClickOutside: true,
-      menuDrop: '.drop'
-    });
-  }
-
-  function initCarousel() {
-    $('.testimonial-slider').scrollGallery({
-      mask: '.mask',
-      slider: '.slideset',
-      slides: '.slide',
-      stretchSlideToMask: true
-    });
-  }
-
-  function initCustomForms() {
-    jcf.setOptions('Select', {
-      wrapNative: false,
-      wrapNativeOnMobile: false,
-    });
-    jcf.replaceAll();
-  }
-
-  // Overview inits
   function initSankeyChart() {
     $('.tree-chart').each(function () {
       var chartsHolder = $(this);
@@ -1249,8 +1190,8 @@
     return data.map(function (row) { return tableRow(row) });
   }
 
-  function onClickNextPage(e) {
-    var index = $(e.currentTarget).data('page-index');
+  function getPage(index) {
+    console.log(index);
     var payload = { current: index };
 
     if (index < _state.table.pageStart) {
@@ -1261,19 +1202,44 @@
       payload.pageStart = (index < _state.table.totalPages) ? index : index - PAGE_JUMP_SIZE;
       payload.pageEnd = (index < _state.table.totalPages) ? index + PAGE_JUMP_SIZE : index;
     }
+    return payload;
+  }
+
+  function onPaginationButtonClick(index) {
+    var payload = getPage(index);
+    _setTable(payload);
+    renderTable();
+    setTablePagination();
+  }
+
+  function onPaginationClick(e) {
+    var index = $(e.currentTarget).data('page-index');
+    var payload = getPage(index)
     _setTable(payload);
     renderTable();
     setTablePagination();
   }
 
   function setTablePagination() {
-    var el = $('.js-table-pagination');
-    // var prevButton = $('.js-pagination-prev').click()
-    el.html('');
+    var pagination = $('.js-table-pagination');
+    var prevButton = $('.js-pagination-prev')
+      .off('click')
+      .on('click', function () {
+        onPaginationButtonClick(_state.table.current - 1);
+      })
+      .removeClass('is-hidden');
+    var nextButton = $('.js-pagination-next')
+      .off('click')
+      .on('click', function () {
+        onPaginationButtonClick(_state.table.current + 1);
+      })
+      .removeClass('is-hidden');
+    pagination.html('');
 
+    var isFirstPage = _state.table.current === 0;
     var isLastPage = _state.table.current === _state.table.totalPages;
     var showLeftDots = _state.table.current > PAGE_JUMP_SIZE;
-    var showRightDots = _state.table.current + PAGE_JUMP_SIZE <= _state.table.totalPages;
+    var showRightDots = _state.table.current + PAGE_JUMP_SIZE <= _state.table.totalPages - 1;
     var pagesRange = isLastPage ? -1 * (PAGE_JUMP_SIZE + 1) : (PAGE_JUMP_SIZE + 1);
 
     var tablePages = _.range(pagesRange)
@@ -1282,12 +1248,16 @@
         return page + element;
       }.bind(this));
 
+    if (isFirstPage) {
+      prevButton.addClass('is-hidden');
+    }
+
     if (isLastPage) {
       tablePages = tablePages.reverse();
+      nextButton.addClass('is-hidden');
     }
 
     if (showLeftDots) {
-
       var leftDots = tablePages[0] - 1;
       tablePages.unshift(leftDots);
       tablePages.unshift(0);
@@ -1307,10 +1277,10 @@
           return left || right;
         }.bind(this);
         var label =  showDots(i, list) ? '...' : pageIndex + 1;
-        var page = $('<li><a>' + label + '</a></li>');
-        page.first()
-          .toggleClass('active', _state.table.current === pageIndex)
-          .click(onClickNextPage)
+        var page = $('<li><a class="pagination-btn">' + label + '</a></li>');
+        page.find('.pagination-btn')
+          .toggleClass('-active', _state.table.current === pageIndex)
+          .click(onPaginationClick)
           .attr('data-page-index', pageIndex);
         return page;
       }.bind(this))
@@ -1319,7 +1289,7 @@
         return acc;
       }, document.createDocumentFragment());
 
-    el.html(markup);
+    pagination.html(markup);
   }
 
   function getTablePage(rows, index, maxSize) {
