@@ -50,7 +50,7 @@
   // This is meant to be called only once
   function init() {
     initFilters();
-    setCountrySearch();
+    initCountrySearch();
     initTableHeader();
   }
 
@@ -1065,7 +1065,6 @@
     var type = el.data('filter-type');
     var data = '';
     var label = '';
-
     // Get the data of the selected filter
     if (type === 'country') {
       label = el.find('a').html();
@@ -1094,6 +1093,7 @@
 
   function resetCountryFilter() {
     updateCountryFilter('', 'Select a Country');
+    $('.js-country-search').val('').trigger('input');
   }
 
   function updateCountryFilter(data, label) {
@@ -1105,7 +1105,7 @@
     $('.js-country-filter-dependent').each(function () {
       this.textContent = data && label;
     });
-    render();
+    if (data) render();
   }
 
   function updateFilter(data, type) {
@@ -1117,7 +1117,7 @@
         this.textContent = data;
       });
     }
-    render();
+    if (data) render();
   }
 
   function restoreFilters() {
@@ -1125,12 +1125,11 @@
     filters.forEach(function (filter) {
       var el = $(filter);
       var type = $(filter).data('filter-type');
-
       if (_state.filters[type] || (_state.filters.iso && type === 'country')) {
         if (type !== 'country') {
           el.val('').trigger('change');
         } else {
-          el.find('#data-filter-placeholder').click();
+          resetCountryFilter();
         }
       }
     })
@@ -1175,7 +1174,7 @@
     });
   }
 
-  function setCountrySearch() {
+  function initCountrySearch() {
     $('.js-country-search').on('input', _.debounce(function (e) {
       const value = e.currentTarget.value.toUpperCase();
       const data = FILTERS_DATA['country'].filter(function (item) {
@@ -1455,16 +1454,16 @@
     var country = _state.filters.iso && getSelectedCountry();
     var data = Object.assign(res.rows[0], { verb: country ? 'and was' : 'were' });
     var formatted = Object.assign({}, data, {
-      total_visitors: data.total_visitors.toLocaleString('en-US'),
-      days: data.days.toLocaleString('en-US')
+      total_visitors: data.total_visitors && data.total_visitors.toLocaleString('en-US'),
+      days: data.days ? data.days.toLocaleString('en-US') : 0
     });
     var sentence = _.template('<strong> <%= total_visitors %> </strong>' +
-      '  <% if (total_visitors > 1) print ("visitors"); else print("visitor") %>,' +
+      '  <% if (total_visitors !== 1) print ("visitors"); else print("visitor") %>,' +
       ' from <strong><%= institutes %> </strong>' +
-      ' <% if (institutes > 1) print ("institutes"); else print("institute") %>,' +
+      ' <% if (institutes !== 1) print ("institutes"); else print("institute") %>,' +
       ' <%= verb %> granted a total of' +
       ' <strong> <%= days %> </strong> research' +
-      ' <% if (days > 1) print ("days"); else print("day") %>.');
+      ' <% if (days !== 1) print ("days"); else print("day") %>.');
     if (country) return country.label + ' had' + sentence(formatted);
     return sentence(formatted);
   }
