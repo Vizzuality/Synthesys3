@@ -49,6 +49,7 @@
 
   // This is meant to be called only once
   function init() {
+    if (_env === 'debug') console.debug('INIT');
     initFilters();
     initCountrySearch();
     initTableHeader();
@@ -56,6 +57,7 @@
 
   // This is meant to be called everytime a filter changes
   function render() {
+    if (_env === 'debug') console.debug('RENDER');
     initDynamicSentence();
     initHighcharts();
     initBubbleChart();
@@ -1048,7 +1050,7 @@
     $.getJSON(BASE_URL, { q: query }, function (data) {
       var payload = {
         rows: orderTableData(data.rows, _state.table),
-        totalPages: Math.floor((data.total_rows - 1)/TABLE_MAX_SIZE)
+        totalPages: Math.floor(Math.abs((data.total_rows - 1)/TABLE_MAX_SIZE))
       };
 
       _setTable(payload);
@@ -1079,7 +1081,7 @@
       removed[type] = '';
       var filtersMinusSelected = Object.assign({}, _state.filters, removed);
       if (!_.every(filtersMinusSelected, function(f) { return f === ''})) {
-        restoreFilters();
+        resetFilters();
       }
 
       if (type === 'country') {
@@ -1088,6 +1090,9 @@
       } else {
         updateFilter(data, type);
       }
+    }
+    if (!_.every(_state.filters, function(f) { return f === ''})) {
+      render();
     }
   }
 
@@ -1105,7 +1110,6 @@
     $('.js-country-filter-dependent').each(function () {
       this.textContent = data && label;
     });
-    if (data) render();
   }
 
   function updateFilter(data, type) {
@@ -1117,22 +1121,29 @@
         this.textContent = data;
       });
     }
-    if (data) render();
   }
 
-  function restoreFilters() {
+  function resetFilters() {
     var filters = Array.prototype.slice.call($('.js-filter'));
     filters.forEach(function (filter) {
       var el = $(filter);
       var type = $(filter).data('filter-type');
       if (_state.filters[type] || (_state.filters.iso && type === 'country')) {
         if (type !== 'country') {
+          updateFilter('', type);
           el.val('').trigger('change');
         } else {
           resetCountryFilter();
         }
       }
     })
+  }
+
+  function restoreFilters() {
+    if (!_.every(_state.filters, function(f) { return f === ''})) {
+      resetFilters();
+      render();
+    }
   }
 
   function initFilters() {
@@ -1362,7 +1373,7 @@
   }
 
   function devTools(type, payload, prevState) {
-    if (_env === 'debug') console.info(type, { payload: payload, state: _state, prevState: prevState });
+    if (_env === 'debug') console.debug(type, { payload: payload, state: _state, prevState: prevState });
   }
 
   // Parsers
