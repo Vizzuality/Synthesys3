@@ -49,7 +49,7 @@
 
   // This is meant to be called only once
   function init() {
-    setFilters();
+    initFilters();
     setCountrySearch();
     initTableHeader();
   }
@@ -1058,85 +1058,121 @@
   }
 
   // Filters
-  function updateFilter(e) {
+  function onFilterClick(e) {
     e.preventDefault();
     e.stopPropagation();
-    var payload = {};
     var el = $(e.currentTarget);
     var type = el.data('filter-type');
-    var data = el.data('value');
-    var label = el.find('a').html();
-    if (typeof data === 'undefined') {
-      data = e.currentTarget.value;
-    }
+    var data = '';
+    var label = '';
+
+    // Get the data of the selected filter
     if (type === 'country') {
-      $('*[data-filter-value="' + type + '"]').html(label);
-      el.closest('.autocomplete, .auto-active').removeClass('auto-active');
-      payload.iso = data;
-      payload.iso2 = ISO_TO_ISO2[data];
-      _setFilters(payload);
-      $('.js-country-filter-dependent').each(function () {
-        this.textContent = data && label;
-      });
+      label = el.find('a').html();
+      data = el.data('value');
     } else {
-      payload[type] = data;
-      _setFilters(payload)
-      if (type === 'discipline') {
-        $('.js-discipline-filter-dependent').each(function () {
-          this.textContent = data;
-        });
+      data = el.val();
+    }
+    // if the selected filter had data (wasnt a placeholder) update it
+    if (data) {
+      // restore all filters
+      var removed = {};
+      removed[type] = '';
+      var filtersMinusSelected = Object.assign({}, _state.filters, removed);
+      if (!_.every(filtersMinusSelected, function(f) { return f === ''})) {
+        restoreFilters();
+      }
+
+      if (type === 'country') {
+        el.closest('.autocomplete, .auto-active').removeClass('auto-active');
+        updateCountryFilter(data, label);
+      } else {
+        updateFilter(data, type);
       }
     }
+  }
+
+  function resetCountryFilter() {
+    updateCountryFilter('', 'Select a Country');
+  }
+
+  function updateCountryFilter(data, label) {
+    var payload = {};
+    $('.js-country-filter-label').html(label);
+    payload.iso = data;
+    payload.iso2 = ISO_TO_ISO2[data] || data;
+    _setFilters(payload);
+    $('.js-country-filter-dependent').each(function () {
+      this.textContent = data && label;
+    });
     render();
-  };
+  }
+
+  function updateFilter(data, type) {
+    var payload = {};
+    payload[type] = data;
+    _setFilters(payload);
+    if (type === 'discipline') {
+      $('.js-discipline-filter-dependent').each(function () {
+        this.textContent = data;
+      });
+    }
+    render();
+  }
 
   function restoreFilters() {
     var filters = Array.prototype.slice.call($('.js-filter'));
     filters.forEach(function (filter) {
+      var el = $(filter);
       var type = $(filter).data('filter-type');
+
       if (_state.filters[type] || (_state.filters.iso && type === 'country')) {
         if (type !== 'country') {
-          $(filter).val('').trigger('change');
+          el.val('').trigger('change');
         } else {
-          filter.children[0].click();
+          el.find('#data-filter-placeholder').click();
         }
       }
     })
   }
 
-  function setFilters() {
+  function initFilters() {
     var filters = Array.prototype.slice.call($('.js-filter'));
     filters.forEach(function (filter) {
       var type = $(filter).data('filter-type');
       var data = FILTERS_DATA[type];
       if (type !== 'country') {
-        setFilter(filter, data);
+        initFilter(filter, data);
       } else {
-        setCountryFilter(filter, data);
+        initCountryFilter(filter, data);
       }
     });
     $('.js-filter-restore').click(restoreFilters);
   }
 
-  // TODO: instead of adding another filter the behaviour should be to replace existing filters
-  function setFilter(filter, data) {
+  function initFilter(filter, data) {
     if (!data) return;
+    var el = $(filter);
     data.forEach(function (item) {
       var optionEl = _.template('<option value="<%= value %>"> <%= label %> </option>')(item);
-      $(filter).append(optionEl);
+      el.append(optionEl);
     });
-    $(filter.children[0]).click(updateFilter);
-    $(filter).change(updateFilter);
+    el.change(onFilterClick);
   }
 
-  function setCountryFilter(filter, data) {
+  function initCountryFilter(filter, data) {
     if (!data) return;
+    var el = $(filter);
+    el.find('#data-filter-placeholder')
+      .on('click', resetCountryFilter);
+
     data.forEach(function (item, i) {
-      var optionEl = _.template('<li data-filter-type="country" data-value="<%= value %>"><a><%= label %></a></li>')(item);
-      $(filter).append(optionEl);
-      $(filter.children[i]).click(updateFilter);
+      var itemOptions = Object.assign({}, item, { id: i });
+      var optionEl = _.template('<li id="country-filter-<%= id %>" data-filter-type="country" data-value="<%= value %>"><a><%= label %></a></li>')(itemOptions);
+      el.append(optionEl);
+      el.find('#country-filter-' + i)
+        .click(onFilterClick);
     });
-    $(filter.children[0]).click(updateFilter);
   }
 
   function setCountrySearch() {
@@ -1148,7 +1184,7 @@
       data.unshift({ value: '', label: 'Select a Country' });
       var countryFilter = $('*[data-filter-type="country"]');
       countryFilter.html('');
-      setCountryFilter(countryFilter[0], data);
+      initCountryFilter(countryFilter[0], data);
     }, 700))
   }
 
@@ -1191,7 +1227,6 @@
   }
 
   function getPage(index) {
-    console.log(index);
     var payload = { current: index };
 
     if (index < _state.table.pageStart) {
