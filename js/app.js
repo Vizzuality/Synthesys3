@@ -51,6 +51,7 @@
     initFilters();
     initCountrySearch();
     initTableHeader();
+    initTableDownload();
   }
 
   // This is meant to be called everytime a filter changes
@@ -1072,6 +1073,12 @@
       _setTable(payload);
       renderTable();
       setTablePagination();
+    });
+  }
+
+  function initTableDownload() {
+    $('.js-table-download').click(function () {
+      csvConverter.convert(_state.table.rows);
     });
   }
 
