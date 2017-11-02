@@ -16,7 +16,7 @@
     table: {
       rows: [],
       totalPages: 0,
-      current: 0, // TODO: update this key on pagination clicks and call renderTable();
+      current: 0,
       pageStart: 0,
       pageEnd: PAGE_JUMP_SIZE,
       orderBy: null,
@@ -67,8 +67,9 @@
   function initSankeyChart() {
     $('.tree-chart').each(function () {
       var chartsHolder = $(this);
-
+      addSpinner(chartsHolder.closest('.col-holder'));
       function drawChart(data, obj) {
+        removeSpinner(chartsHolder.closest('.col-holder'));
         chartsHolder.empty();
         var chartBlock = $('<div class="chart-block">').appendTo(chartsHolder);
         var margin = {
@@ -261,6 +262,7 @@
       holder.empty();
       if (!_state.filters.discipline) {
         holder.closest('.col').removeClass('is-hidden');
+        addSpinner(holder.closest('.col-holder'));
         d3.selection.prototype.moveToFront = function () {
           return this.each(function () {
             this.parentNode.appendChild(this);
@@ -312,6 +314,7 @@
         feMerge.append("feMergeNode")
           .attr("in", "SourceGraphic");
         $.getJSON(BASE_URL, { q: query }, function (data) {
+          removeSpinner(holder.closest('.col-holder'));
           var root = parseDisciplineBubbleChartData(data);
           var node = svg.selectAll(".node")
             .data(
@@ -447,6 +450,8 @@
 
   function initHighcharts() {
     $('.gender-donut-chart').each(function () {
+      var holder = $(this);
+      addSpinner(holder.closest('.col-holder'));
       var query, params;
       if (_state.filters.iso2) {
         params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
@@ -456,12 +461,14 @@
         query = genderPieChartQuery(params).trim();
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
+        removeSpinner(holder.closest('.col-holder'));
         var apiData = parseGenderPieChartData(data);
         renderPieChart(this, apiData);
       }.bind(this));
     });
     $('.line-chart').each(function () {
       var holder = $(this);
+      addSpinner(holder.closest('.col-holder'));
       var query;
       var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       if (_state.filters.iso2) {
@@ -470,6 +477,7 @@
         query = researchersLineChartQuery(params).trim();
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
+        removeSpinner(holder.closest('.col-holder'));
         var apiData = parseResearchersLineChartData(data);
         Highcharts.chart({
           chart: {
@@ -644,7 +652,9 @@
         query = choroplethQuery(params).trim();
       }
       var holder = $(this);
+      addSpinner(holder.closest('.col-holder'));
       $.getJSON(BASE_URL, { q: query, format: 'geojson' }, function (geojson) {
+        removeSpinner(holder.closest('.col-holder'));
         var polygons = Highcharts.geojson(geojson);
         var mapData = parseChoroplethMapChartData(polygons);
         Highcharts.mapChart({
@@ -679,6 +689,8 @@
       });
     });
     $('.researcher-type-donut-chart').each(function () {
+      var holder = $(this);
+      addSpinner(holder.closest('.col-holder'));
       var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       var query;
       if (_state.filters.iso2) {
@@ -687,6 +699,7 @@
         query = researcherDonutChartQuery(params).trim();
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
+        removeSpinner(holder.closest('.col-holder'));
         var apiData = parseResearcherTypeDonutChartData(data);
         renderPieChart(this, apiData, {
           height: 400,
@@ -697,6 +710,8 @@
       }.bind(this));
     })
     $('.column-chart').each(function () {
+      var holder = $(this);
+      addSpinner(holder.closest('.col-holder'));
       var query;
       if (_state.filters.iso) {
         query = papersPerYearCountryBarChartQuery(_state.filters).trim();
@@ -705,6 +720,7 @@
         query = papersPerYearBarChartQuery(params).trim();
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
+        removeSpinner(holder.closest('.col-holder'));
         var apiData = parsePapersByYearBarChartData(data);
         Highcharts.chart({
           chart: {
@@ -812,6 +828,7 @@
     });
     $('.treemap-chart').each(function () {
       var holder = $(this);
+      addSpinner(holder.closest('.col-holder'));
       var query;
       var params = prefixFiltersForQuery('AND', 'discipline like', 'funding_ro like');
       if (_state.filters.iso2) {
@@ -820,6 +837,7 @@
         query = institutesVisitedTreeChartQuery(params).trim();
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
+        removeSpinner(holder.closest('.col-holder'));
         var apiData = parseInstitutesVisitedTreeChartData(data);
         Highcharts.chart({
           chart: {
@@ -1377,6 +1395,15 @@
 
   function devTools(type, payload, prevState) {
     if (window._env === 'development') console.debug(type, { payload: payload, state: _state, prevState: prevState });
+  }
+
+  function addSpinner(container) {
+    var spinner = $('<div class="spinner"></div>');
+    container.append(spinner);
+  }
+
+  function removeSpinner(container) {
+    container.find('.spinner').remove();
   }
 
   // Parsers

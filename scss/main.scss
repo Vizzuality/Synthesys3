@@ -1190,9 +1190,11 @@ body {
   }
   .col-holder {
     height: 100%;
+    min-height: 325px;
     padding: 10px;
     border-radius: 7px;
     border: 1px solid $mystic;
+    position: relative;
   }
 }
 
@@ -1799,4 +1801,25 @@ body {
 
 .is-hidden {
   display: none;
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 20px;
+  width: 20px;
+  z-index: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: rotate 0.6s linear infinite;
+  border: 3px solid transparent;
+  border-top-color: $turquoise;
+  border-right-color: turquoise;
+  border-radius: 50%;
+
+  @keyframes rotate {
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
 }
