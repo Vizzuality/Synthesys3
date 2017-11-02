@@ -261,6 +261,11 @@
     $('.bubbles-chart').each(function () {
       var holder = $(this);
       holder.empty();
+
+      var div = d3.select("body").append("div")
+        .attr("class", "bubble-tooltip")
+        .style("opacity", 0);
+
       if (!_state.filters.discipline) {
         holder.closest('.col').removeClass('is-hidden');
         addSpinner(holder.closest('.col-holder'));
@@ -330,7 +335,8 @@
             .attr("class", "node")
             .attr("transform", function (d) {
                 var y = d.y + 20;
-                return "translate(" + d.x + "," + y + ")";
+
+                return "translate(" + (d.x + 20) + "," + y + ")";
               }
             );
           node.append("circle")
@@ -356,20 +362,6 @@
                 strokeIndex++;
               }
               return color[counter];
-            });
-          node.append("text")
-            .attr("dy", ".3em")
-            .style("text-anchor", "middle")
-            .style("fill", "#fff")
-            .text(function (d) {
-              return drawText(d.value);
-            });
-          node.append("svg:text")
-            .attr("dy", "1.5em")
-            .style("text-anchor", "middle")
-            .style("fill", "#fff")
-            .text(function (d) {
-              return d.className;
             });
           if (isIE) {
             var addEvents = function addEvents(self) {
@@ -408,9 +400,20 @@
                 .attr("class", "selected_circle");
               svg[0][0].appendChild(this);
             });
+            node.on(isTouchDevice ? "click" : "mousemove", function (d) {
+              div.style("opacity", 1);
+              div.html(d.discipline + "<br/>Number of visitors:  <strong>" + drawText(d.value) + "</strong><br/><strong>" + d.percent + "</strong> of all visits")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 30) + "px")
+                .style("transform", "translate(-50%, -50%)");
+            })
             node.on("mouseleave", function (d) {
               d3.select(this).select("circle")
                 .attr("class", "default_circle");
+
+              div.transition()
+                .duration(150)
+                .style("opacity", 0);
             });
           }
         }.bind(this));
@@ -424,7 +427,12 @@
                 recurse(node.name, child);
               });
             } else {
-              classes.push({ packageName: name, className: node.name, value: node.size });
+              classes.push({
+                packageName: name,
+                discipline: node.name,
+                value: node.size,
+                percent: node.percent
+              });
             }
           }
 
@@ -538,9 +546,6 @@
           legend: {
             enabled: false
           },
-          tooltip: {
-            valueSuffix: 'k'
-          },
           plotOptions: {
             area: {
               fillColor: {
@@ -589,7 +594,7 @@
           },
           series: [
             {
-              name: 'Participants',
+              name: 'Number of visitors',
               data: apiData.yearCount
             }
           ],
@@ -789,7 +794,7 @@
           },
           tooltip: {
             headerFormat: '',
-            pointFormat: 'Papers per {point.name}: <b>{point.y}</b>'
+            pointFormat: 'Papers in {point.name}: <b>{point.y}</b>'
           },
           series: [{
             name: 'Population',
@@ -852,9 +857,6 @@
             treemap: {
               joinBy: ['colorValue', 'value']
             }
-          },
-          tooltip: {
-            valueSuffix: 'k'
           },
           colorAxis: {
             dataClasses: [{
@@ -982,7 +984,7 @@
       tooltip: {
         pointFormat: '{point.percentage:.1f}%',
         style: {
-          'text-transform': 'uppercase'
+          'text-transform': 'capitalize'
         }
       },
       plotOptions: {
@@ -1017,7 +1019,7 @@
           'fontSize': '13px',
           'fontWeight': 'normal',
           'textOverflow': 'ellipsis',
-          'text-transform': 'uppercase'
+          'text-transform': 'capitalize'
         }
       },
       series: [{
@@ -1517,10 +1519,15 @@
   }
 
   function parseDisciplineBubbleChartData(res) {
+    var total = _.sum(res.rows.map(function (r) {  return r.count }));
+    var getPercent = function (n) {
+     var percent = ((n / total) * 100);
+     return percent.toLocaleString('en-US', { maximumFractionDigits: 1 }) + '%';
+    };
     return {
       name: 'Root',
       children: res.rows.map(function (row) {
-        return { name: row.discipline, size: row.count }
+        return { name: row.discipline, size: row.count, percent: getPercent(row.count) }
       })
     }
   }

@@ -1823,3 +1823,22 @@ body {
     }
   }
 }
+
+
+.bubble-tooltip {
+  position: absolute;
+  white-space: nowrap;
+  padding: 5px;
+  font-size: 13px;
+  font-weight: 400;
+  background: rgba($white, 0.7);
+  border: 1px solid $gulf-blue;
+  border-radius: 4px;
+  pointer-events: none;
+  text-align: left;
+  line-height: 1.3;
+  color: $black;
+  > * {
+    color: $black;
+  }
+}
