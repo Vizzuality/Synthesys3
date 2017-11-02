@@ -716,7 +716,7 @@
       if (_state.filters.iso) {
         query = papersPerYearCountryBarChartQuery(_state.filters).trim();
       } else {
-        var params = prefixFiltersForQuery('AND', 'discipline like', '');
+        var params = prefixFiltersForQuery('AND', 'discipline like', 'synthround like');
         query = papersPerYearBarChartQuery(params).trim();
       }
       $.getJSON(BASE_URL, { q: query }, function (data) {
