@@ -679,7 +679,7 @@
           },
           tooltip: {
             headerFormat: '',
-            pointFormat: 'Number of visitors: <b>{point.properties.count}</b>'
+            pointFormat: '{point.name}<br>Number of visitors: <b>{point.properties.count}</b>'
           },
           series: [{
             data: mapData,
@@ -1379,9 +1379,10 @@
   }
 
   // Utils
-  function getSelectedCountry() {
+  function getSelectedCountry(iso) {
+    var value = iso || _state.filters.iso;
     return FILTERS_DATA.country.find(function (country) {
-      return country.value === _state.filters.iso
+      return country.value === value;
     });
   }
 
@@ -1552,7 +1553,8 @@
     };
 
     return polygons.map(function (polygon) {
-      var result = Object.assign({}, polygon, { color: getColor(polygon.properties.count) });
+      const country = getSelectedCountry(ISO2_TO_ISO[polygon.properties.iso]);
+      var result = Object.assign({}, polygon, { color: getColor(polygon.properties.count), name: country && country.label });
       if (result.properties.count === 0) result.properties.count = 'N/A';
       return result;
     });
