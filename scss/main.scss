@@ -928,10 +928,11 @@ body {
   position: relative;
   z-index: 999;
   background: $gulf-blue;
+
   .filter-holder {
     @extend %clearfix;
     padding: 30px 0;
-    background: $deep-sapphire;
+    background: $gulf-blue;
     @include media('<tablet') {
       position: fixed;
       left: -100%;
@@ -945,6 +946,9 @@ body {
       padding: 0;
     }
   }
+
+
+
   .filter-by {
     color: $torea-bay;
     display: block;
@@ -1025,7 +1029,9 @@ body {
   @include media('>=1300px') {
     margin: 0 -40px 0 0;
   }
+
   > li {
+    position: relative;
     padding: 0 9px;
     margin: 0 0 11px;
     letter-spacing: 0;
@@ -1088,6 +1094,21 @@ body {
             right: auto;
           }
         }
+      }
+    }
+
+    &.-selected {
+      background-color: $catalina-blue;
+      &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid $catalina-blue;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
   }

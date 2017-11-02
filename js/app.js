@@ -1083,9 +1083,12 @@
       }
 
       if (type === 'country') {
-        el.closest('.autocomplete, .auto-active').removeClass('auto-active');
+        var autocomplete = el.closest('.autocomplete, .auto-active');
+        autocomplete.removeClass('auto-active');
+        autocomplete.parent().addClass('-selected');
         updateCountryFilter(data, label);
       } else {
+        el.parent().addClass('-selected');
         updateFilter(data, type);
       }
     }
@@ -1130,7 +1133,9 @@
         if (type !== 'country') {
           updateFilter('', type);
           el.val('').trigger('change');
+          el.parent().removeClass('-selected');
         } else {
+          el.closest('.autocomplete').parent().removeClass('-selected');
           resetCountryFilter();
         }
       }

@@ -1722,7 +1722,7 @@ body {
   background: #061b60; }
   .filter-area .filter-holder {
     padding: 30px 0;
-    background: #071c60; }
+    background: #061b60; }
     @media (max-width: 767px) {
       .filter-area .filter-holder {
         position: fixed;
@@ -1801,6 +1801,7 @@ body {
     .filter-list {
       margin: 0 -40px 0 0; } }
   .filter-list > li {
+    position: relative;
     padding: 0 9px;
     margin: 0 0 11px;
     letter-spacing: 0; }
@@ -1849,6 +1850,18 @@ body {
         .filter-list > li.active:last-child:before {
           left: 100%;
           right: auto; } }
+    .filter-list > li.-selected {
+      background-color: #082580; }
+      .filter-list > li.-selected::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid #082580;
+        left: 50%;
+        transform: translateX(-50%); }
   .filter-list .all {
     color: #a9befb;
     display: block;
