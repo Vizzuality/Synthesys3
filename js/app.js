@@ -879,7 +879,7 @@
               to: 160,
               color: '#1fbb88'
             }, {
-              from: 200,
+              from: 161,
               color: '#077551'
             }]
           },
@@ -1459,13 +1459,21 @@
 
   function parseInstitutesVisitedTreeChartData(res) {
     var apiData = {};
-    apiData.institutesCount = res.rows.map(function (row) {
+    apiData.institutesCount = _.values(res.rows.map(function (row) {
       return {
         name: INSTITUTES[row.institute_id],
         value: row.count,
         colorValue: row.count
       };
-    });
+    }).reduce(function (acc, next) {
+      var institute = {};
+      institute[next.name] = acc[next.name] ?
+        Object.assign({},
+          acc[next.name],
+          { value: next.value + acc[next.name].value })
+        : next;
+      return Object.assign({}, acc, institute);
+    }, {}));
     return apiData;
   }
 
