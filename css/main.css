@@ -359,7 +359,7 @@ th {
   padding: 0;
   list-style: none; }
 
-.clearfix:after, .header-content:after, .container:after, .info-slider .head:after, .intro-text:after, .about-detail:after, .sub-nav ul:after, .project-block .btn-holder:after, .project-info:after, .filter-area .filter-holder:after, .filter-list:after, .charts-block:after, .paging-area:after {
+.clearfix:after, .header-content:after, .container:after, .info-slider .head:after, .intro-text:after, .intro-text .text .btn-holder:after, .about-detail:after, .sub-nav ul:after, .project-info:after, .filter-area .filter-holder:after, .filter-list:after, .charts-block:after, .paging-area:after {
   content: '';
   display: block;
   clear: both; }
@@ -1433,6 +1433,24 @@ body {
         padding: 0 0 0 10px; } }
     .intro-text .text p {
       margin: 0; }
+    .intro-text .text .btn-holder {
+      text-align: left; }
+    .intro-text .text .more {
+      color: #2244a8;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+      text-decoration: none; }
+      .intro-text .text .more:after {
+        color: #51e5b4;
+        content: '\e801';
+        font-family: "fontello";
+        font-size: 22px;
+        margin: 0 0 0 20px;
+        display: inline-block;
+        vertical-align: middle; }
+      .intro-text .text .more:hover {
+        color: #51e5b4; }
 
 .about-detail {
   max-width: 540px;
@@ -1552,28 +1570,6 @@ body {
   margin: 0 auto;
   padding: 11px 0;
   border-top: 3px solid rgba(56, 62, 85, 0.1); }
-  .project-block .btn-holder {
-    text-align: right;
-    margin: 0 0 23px; }
-    @media (min-width: 768px) {
-      .project-block .btn-holder {
-        margin: 0 0 12px; } }
-  .project-block .more {
-    color: #2244a8;
-    font-size: 16px;
-    line-height: 20px;
-    font-weight: 700;
-    text-decoration: none; }
-    .project-block .more:after {
-      color: #51e5b4;
-      content: '\e801';
-      font-family: "fontello";
-      font-size: 22px;
-      margin: 0 0 0 20px;
-      display: inline-block;
-      vertical-align: middle; }
-    .project-block .more:hover {
-      color: #51e5b4; }
   .project-block h1 {
     color: #383e55;
     font-size: 60px;
