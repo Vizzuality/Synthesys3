@@ -535,6 +535,8 @@ body {
 }
 
 .intro-text {
+  display: flex;
+  align-items: center;
   padding: 64px 0 52px;
   @extend %clearfix;
   border-bottom: 3px solid rgba($oxford-blue, 0.10);
@@ -555,7 +557,7 @@ body {
     margin: 0 0 54px;
     font-family: $base-font-roboto;
     @include media('>=tablet') {
-      font-size: 80px;
+      font-size: 70px;
       line-height: 82px;
       margin: 4px 0 0;
       float: left;
@@ -676,30 +678,7 @@ body {
   @include media('>=tablet') {
     margin: 0 0 65px;
   }
-  &:before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 100%;
-    width: 13%;
-    height: 4px;
-    background: $turquoise;
-    @include media('>=tablet') {
-      width: 23.5%;
-    }
-  }
-  &:after {
-    content: "";
-    position: absolute;
-    left: 13%;
-    top: 100%;
-    margin: 4px 0 0 -8px;
-    border-top: 8px solid $turquoise;
-    border-left: 8px solid transparent;
-    @include media('>=tablet') {
-      left: 23.5%;
-    }
-  }
+
   .container {
     padding-top: 15px;
     padding-bottom: 15px;
