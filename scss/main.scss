@@ -51,6 +51,19 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   @extend %clearfix;
+
+  &.-with-vertical {
+    position: relative;
+    min-height: 750px;
+
+    .about-detail {
+      padding-right: 30%;
+
+      @include media('>=tablet') {
+        padding-right: 10%;
+      }
+    }
+  }
 }
 
 .btn-default {
@@ -537,10 +550,12 @@ body {
 .intro-text {
   display: flex;
   align-items: center;
+  flex-direction: column;
   padding: 64px 0 52px;
   @extend %clearfix;
   border-bottom: 3px solid rgba($oxford-blue, 0.10);
   @include media('>=tablet') {
+    flex-direction: row;
     padding: 50px 0;
   }
   @include media('>=desktop') {
@@ -571,6 +586,7 @@ body {
     line-height: 32px;
     @include media('>=tablet') {
       overflow: hidden;
+      margin-left: 100px;
       padding: 0 0 0 10px;
     }
     p {
@@ -648,25 +664,30 @@ body {
 }
 
 .promo {
-  overflow: hidden;
-  .img-holder,
-  .img-frame {
-    position: relative;
-    float: left;
-    left: 50%;
-    min-width: 100%;
-    width: 100%;
-    @include media('>=tablet') {
-      min-width: 1200px;
-    }
+  width: 90%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 auto;
+
+  &.-big {
+    height: 630px;
   }
-  .img-frame {
-    left: -50%;
+
+  &.-horizontal {
+    height: 350px;
   }
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
+
+  &.-vertical {
+    position: absolute;
+    width: 25%;
+    height: 90%;
+    right: 0;
+    top: 50px;
+  }
+
+  &.-with-margin {
+    margin: 60px auto 0;
   }
 }
 

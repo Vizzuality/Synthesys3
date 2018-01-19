@@ -969,6 +969,14 @@ body {
   padding-left: 20px;
   max-width: 1100px;
   margin: 0 auto; }
+  .container.-with-vertical {
+    position: relative;
+    min-height: 750px; }
+    .container.-with-vertical .about-detail {
+      padding-right: 30%; }
+      @media (min-width: 768px) {
+        .container.-with-vertical .about-detail {
+          padding-right: 10%; } }
 
 .btn-default {
   display: inline-block;
@@ -1386,10 +1394,12 @@ body {
 .intro-text {
   display: flex;
   align-items: center;
+  flex-direction: column;
   padding: 64px 0 52px;
   border-bottom: 3px solid rgba(56, 62, 85, 0.1); }
   @media (min-width: 768px) {
     .intro-text {
+      flex-direction: row;
       padding: 50px 0; } }
   @media (min-width: 1024px) {
     .intro-text {
@@ -1419,6 +1429,7 @@ body {
     @media (min-width: 768px) {
       .intro-text .text {
         overflow: hidden;
+        margin-left: 100px;
         padding: 0 0 0 10px; } }
     .intro-text .text p {
       margin: 0; }
@@ -1484,24 +1495,23 @@ body {
             margin-right: 0; } }
 
 .promo {
-  overflow: hidden; }
-  .promo .img-holder,
-  .promo .img-frame {
-    position: relative;
-    float: left;
-    left: 50%;
-    min-width: 100%;
-    width: 100%; }
-    @media (min-width: 768px) {
-      .promo .img-holder,
-      .promo .img-frame {
-        min-width: 1200px; } }
-  .promo .img-frame {
-    left: -50%; }
-  .promo img {
-    width: 100%;
-    height: auto;
-    display: block; }
+  width: 90%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 auto; }
+  .promo.-big {
+    height: 630px; }
+  .promo.-horizontal {
+    height: 350px; }
+  .promo.-vertical {
+    position: absolute;
+    width: 25%;
+    height: 90%;
+    right: 0;
+    top: 50px; }
+  .promo.-with-margin {
+    margin: 60px auto 0; }
 
 .sub-nav {
   background: #0a225c;
