@@ -1474,8 +1474,8 @@
     var step = (max - min) / colors.length;
     apiData.buckets = colors.map(function (color, i) {
       return {
-        to: min + ((i + 1) * step),
-        from: min + (i * step),
+        to: Math.ceil(min + ((i + 1) * step)),
+        from: Math.floor(min + (i * step)),
         color: color
       };
     });
