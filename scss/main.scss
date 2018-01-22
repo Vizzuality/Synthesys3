@@ -51,6 +51,19 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   @extend %clearfix;
+
+  &.-with-vertical {
+    position: relative;
+    min-height: 750px;
+
+    .about-detail {
+      padding-right: 30%;
+
+      @include media('>=tablet') {
+        padding-right: 10%;
+      }
+    }
+  }
 }
 
 .btn-default {
@@ -535,10 +548,14 @@ body {
 }
 
 .intro-text {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   padding: 64px 0 52px;
   @extend %clearfix;
   border-bottom: 3px solid rgba($oxford-blue, 0.10);
   @include media('>=tablet') {
+    flex-direction: row;
     padding: 50px 0;
   }
   @include media('>=desktop') {
@@ -555,7 +572,7 @@ body {
     margin: 0 0 54px;
     font-family: $base-font-roboto;
     @include media('>=tablet') {
-      font-size: 80px;
+      font-size: 70px;
       line-height: 82px;
       margin: 4px 0 0;
       float: left;
@@ -569,10 +586,35 @@ body {
     line-height: 32px;
     @include media('>=tablet') {
       overflow: hidden;
+      margin-left: 100px;
       padding: 0 0 0 10px;
     }
     p {
       margin: 0;
+    }
+
+    .btn-holder {
+      @extend %clearfix;
+      text-align: left;
+    }
+    .more {
+      color: $cerulean-blue;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 700;
+      text-decoration: none;
+      &:after {
+        color: $turquoise;
+        content: '\e801';
+        font-family: "fontello";
+        font-size: 22px;
+        margin: 0 0 0 20px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      &:hover {
+        color: $turquoise;
+      }
     }
   }
 }
@@ -646,25 +688,30 @@ body {
 }
 
 .promo {
-  overflow: hidden;
-  .img-holder,
-  .img-frame {
-    position: relative;
-    float: left;
-    left: 50%;
-    min-width: 100%;
-    width: 100%;
-    @include media('>=tablet') {
-      min-width: 1200px;
-    }
+  width: 90%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: 0 auto;
+
+  &.-big {
+    height: 630px;
   }
-  .img-frame {
-    left: -50%;
+
+  &.-horizontal {
+    height: 350px;
   }
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
+
+  &.-vertical {
+    position: absolute;
+    width: 25%;
+    height: 90%;
+    right: 0;
+    top: 50px;
+  }
+
+  &.-with-margin {
+    margin: 60px auto 0;
   }
 }
 
@@ -676,30 +723,7 @@ body {
   @include media('>=tablet') {
     margin: 0 0 65px;
   }
-  &:before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 100%;
-    width: 13%;
-    height: 4px;
-    background: $turquoise;
-    @include media('>=tablet') {
-      width: 23.5%;
-    }
-  }
-  &:after {
-    content: "";
-    position: absolute;
-    left: 13%;
-    top: 100%;
-    margin: 4px 0 0 -8px;
-    border-top: 8px solid $turquoise;
-    border-left: 8px solid transparent;
-    @include media('>=tablet') {
-      left: 23.5%;
-    }
-  }
+
   .container {
     padding-top: 15px;
     padding-bottom: 15px;
@@ -742,33 +766,7 @@ body {
   margin: 0 auto;
   padding: 11px 0;
   border-top: 3px solid rgba($oxford-blue, 0.10);
-  .btn-holder {
-    @extend %clearfix;
-    text-align: right;
-    margin: 0 0 23px;
-    @include media('>=tablet') {
-      margin: 0 0 12px;
-    }
-  }
-  .more {
-    color: $cerulean-blue;
-    font-size: 16px;
-    line-height: 20px;
-    font-weight: 700;
-    text-decoration: none;
-    &:after {
-      color: $turquoise;
-      content: '\e801';
-      font-family: "fontello";
-      font-size: 22px;
-      margin: 0 0 0 20px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    &:hover {
-      color: $turquoise;
-    }
-  }
+
   h1 {
     color: $oxford-blue;
     font-size: 60px;
