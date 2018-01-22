@@ -22,11 +22,15 @@
   <script src="https://code.highcharts.com/highcharts.js" defer></script>
   <script src="https://code.highcharts.com/maps/modules/map.js" defer></script>
   <script src="https://code.highcharts.com/modules/treemap.js" defer></script>
-  <script src="https://d3js.org/d3.v3.min.js" defer></script>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+
   <!-- include custom JavaScript -->
   <script src="js/constants.js" defer></script>
   <script src="js/sql-queries.js" defer></script>
   <script src="js/app.js" defer></script>
+  <script src="js/map-component.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/lib.js" defer></script>
   <script type="application/javascript">
@@ -136,7 +140,7 @@
                 <span class="js-discipline-filter-dependent"></span>
               </div>
             </div>
-            <div class="map-chart" data-geo-src="inc/fr-all-all.geo.json"></div>
+            <div class="map-chart"></div>
           </div>
         </div>
         <div class="col">

@@ -2278,6 +2278,23 @@ body {
 .chart-heading {
   padding: 20px 15px 0; }
 
+.map-chart {
+  height: calc(100% - 76px); }
+  .map-chart .polygon.-choro-0 {
+    fill: #b1b1b1; }
+  .map-chart .polygon.-choro-1 {
+    fill: #6f93f1; }
+  .map-chart .polygon.-choro-2 {
+    fill: #6f93f1; }
+  .map-chart .polygon.-choro-3 {
+    fill: #3751b4; }
+  .map-chart .polygon.-choro-4 {
+    fill: #2c46b7; }
+  .map-chart .polygon.-choro-5 {
+    fill: #1c2c8c; }
+  .map-chart .polygon.-choro-6 {
+    fill: #142672; }
+
 .chart-title {
   font-weight: 400;
   color: #383e55;

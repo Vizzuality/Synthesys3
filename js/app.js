@@ -666,40 +666,18 @@
         query = choroplethQuery(params).trim();
       }
       var holder = $(this);
+      holder.html('');
       addSpinner(holder.closest('.col-holder'));
       $.getJSON(BASE_URL, { q: query, format: 'geojson' }, function (geojson) {
         removeSpinner(holder.closest('.col-holder'));
-        var polygons = Highcharts.geojson(geojson);
-        var mapData = parseChoroplethMapChartData(polygons);
-        Highcharts.mapChart({
-          chart: {
-            renderTo: holder[0],
-            height: 600
-          },
-          title: {
-            text: ''
-          },
-          plotOptions: {
-            map: {
-              allAreas: true,
-              borderColor: '#fff'
-            }
-          },
-          tooltip: {
-            headerFormat: '',
-            pointFormat: '{point.name}<br>Number of visitors: <b>{point.properties.count}</b>'
-          },
-          series: [{
-            data: mapData,
-            showInLegend: false,
-            states: {
-              hover: {
-                borderWidth: 2,
-                brightness: 0
-              }
-            }
-          }]
-        });
+        var features = parseChoroplethMapChartData(geojson.features);
+        mapComponent(holder[0], {
+          useRobinsonProjection: true,
+          features: features,
+          getPolygonClassName: function (data) {
+            return data.color;
+          }
+        })
       });
     });
     $('.researcher-type-donut-chart').each(function () {
@@ -1559,18 +1537,18 @@
 
     var domain = polygons.map(function (polygon) { return polygon.properties.count });
     var colors = [
-      '#6f93f1',
-      '#6f93f1',
-      '#3751b4',
-      '#2c46b7',
-      '#1c2c8c',
-      '#142672'
+      '-choro-1',
+      '-choro-2',
+      '-choro-3',
+      '-choro-4',
+      '-choro-5',
+      '-choro-6'
     ];
     var colorScale = d3.scale.quantile()
       .domain(domain)
       .range(colors);
     var getColor = function getColor(count) {
-      if (count === 0) return '#b1b1b1';
+      if (count === 0) return '-choro-0';
       return colorScale(count);
     };
 

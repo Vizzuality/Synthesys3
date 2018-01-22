@@ -1638,6 +1638,41 @@ body {
   padding: 20px 15px 0;
 }
 
+.map-chart {
+  height: calc(100% - 76px);
+
+  .polygon {
+
+    &.-choro-0 {
+      fill: #b1b1b1;
+    }
+
+    &.-choro-1 {
+      fill: #6f93f1;
+    }
+
+    &.-choro-2 {
+      fill: #6f93f1;
+    }
+
+    &.-choro-3 {
+      fill: #3751b4;
+    }
+
+    &.-choro-4 {
+      fill: #2c46b7;
+    }
+
+    &.-choro-5 {
+      fill: #1c2c8c;
+    }
+
+    &.-choro-6 {
+      fill: #142672;
+    }
+  }
+}
+
 .chart-title {
   font-weight: 400;
   color: #383e55;
