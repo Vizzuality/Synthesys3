@@ -288,9 +288,17 @@
         };
         var diameter = 400,
           format = d3.format(",d"),
-          color = ['#435caf', '#7e93d7', '#b3c3f9', '#e6ebfd', '#5bcba6', '#74ebc3', '#a1ecd3', '#d3f9ec'],
-          fillIndex = 0,
-          strokeIndex = 0;
+          color = [
+            '#435caf',
+            '#7e93d7',
+            '#b3c3f9',
+            '#e6ebfd',
+            '#5bcba6',
+            '#74ebc3',
+            '#a1ecd3',
+            '#d3f9ec'
+          ];
+        var fillIndex = 0, strokeIndex = 0;
         var bubble = d3.layout.pack()
           .sort(null)
           .size([diameter, diameter])
@@ -445,7 +453,7 @@
             sepationNumber = [];
           for (var i = 0, l = arr.length; i < l; i++) {
             if (i !== 0 && i % 3 === 0) {
-              sepationNumber.push('.');
+              sepationNumber.push(',');
             }
             sepationNumber.push(arr[i]);
           }
@@ -537,7 +545,7 @@
                 'font-weight': 'bold'
               },
               formatter: function () {
-                return this.value + 'k';
+                return this.value;
               },
               x: -23,
               y: 2
@@ -636,7 +644,7 @@
             name: chart.series[0].name.toUpperCase(),
             max: chart.yAxis[0].dataMax
           };
-          var legend = $(_.template('<div class="chart-max-val"><span> <%= name %> </span><b> <%= max %> k</b></div>')(opts));
+          var legend = $(_.template('<div class="chart-max-val"><span> <%= name %> </span><b> <%= max %></b></div>')(opts));
           var oldLegend = holder.parent().find('.chart-max-val');
           if (oldLegend[0]) {
             oldLegend.replaceWith(legend);
@@ -859,29 +867,7 @@
             }
           },
           colorAxis: {
-            dataClasses: [{
-              to: 20,
-              color: '#1d388f'
-            }, {
-              from: 21,
-              to: 40,
-              color: '#5d77cd'
-            }, {
-              from: 41,
-              to: 80,
-              color: '#a0b4f7'
-            }, {
-              from: 81,
-              to: 120,
-              color: '#51e5b4'
-            }, {
-              from: 121,
-              to: 160,
-              color: '#1fbb88'
-            }, {
-              from: 161,
-              color: '#077551'
-            }]
+            dataClasses: apiData.buckets
           },
           legend: {
             itemStyle: {
@@ -907,12 +893,12 @@
             },
             labelFormatter: function () {
               if (!this.from) {
-                return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + 'k</span>';
+                return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + '</span>';
               }
               if (!this.to) {
-                return '<span class="legend-item" style="background-color:' + this.color + '">' + this.from + 'k</span>';
+                return '<span class="legend-item" style="background-color:' + this.color + '">' + this.from + '</span>';
               }
-              return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + 'k</span>';
+              return '<span class="legend-item" style="background-color:' + this.color + '">' + this.to + '</span>';
             },
             align: 'left'
           },
@@ -1459,21 +1445,43 @@
 
   function parseInstitutesVisitedTreeChartData(res) {
     var apiData = {};
+    var colors = [
+      '#1d388f',
+      '#5d77cd',
+      '#a0b4f7',
+      '#51e5b4',
+      '#1fbb88',
+      '#077551'
+    ];
     apiData.institutesCount = _.values(res.rows.map(function (row) {
       return {
         name: INSTITUTES[row.institute_id],
-        value: row.count,
-        colorValue: row.count
+        value: row.count
       };
     }).reduce(function (acc, next) {
       var institute = {};
+      var value = acc[next.name] && next.value + acc[next.name].value;
       institute[next.name] = acc[next.name] ?
         Object.assign({},
           acc[next.name],
-          { value: next.value + acc[next.name].value })
+          {
+            value: value,
+            colorValue: value
+          })
         : next;
       return Object.assign({}, acc, institute);
     }, {}));
+    const min = _.minBy(apiData.institutesCount, 'value').value;
+    var max = _.maxBy(apiData.institutesCount, 'value').value;
+    var step = (max - min) / colors.length;
+    apiData.buckets = colors.map(function (color, i) {
+      return {
+        to: min + ((i + 1) * step),
+        from: min + (i * step),
+        color: color
+      };
+    });
+    console.log(apiData);
     return apiData;
   }
 
@@ -1551,7 +1559,14 @@
     }, {}));
 
     var domain = polygons.map(function (polygon) { return polygon.properties.count });
-    var colors = ['#6f93f1', '#6f93f1', '#3751b4', '#2c46b7', '#1c2c8c', '#142672'];
+    var colors = [
+      '#6f93f1',
+      '#6f93f1',
+      '#3751b4',
+      '#2c46b7',
+      '#1c2c8c',
+      '#142672'
+    ];
     var colorScale = d3.scale.quantile()
       .domain(domain)
       .range(colors);
