@@ -58,6 +58,7 @@
   function render() {
     if (window._env === 'development') console.debug('RENDER');
     initDynamicSentence();
+    initMapChart();
     initHighcharts();
     initBubbleChart();
     initSankeyChart();
@@ -465,6 +466,51 @@
     });
   }
 
+  function initMapChart() {
+    $('.map-chart').each(function () {
+      var tooltip = d3.select("body").append("div")
+        .attr("class", "bubble-tooltip")
+        .style("opacity", 0);
+
+      var query, params;
+      if (_state.filters.iso2) {
+        query = choroplethCountryQuery(_state.filters).trim();
+      } else if (_state.filters.funding_round) {
+        params = prefixFiltersForQuery('AND','', 'synthesys.synth_roun =');
+        query = choroplethFundingRoundQuery(params).trim();
+      } else {
+        params = prefixFiltersForQuery('AND', 'synthesys.discipline =', '');
+        query = choroplethQuery(params).trim();
+      }
+      var holder = $(this);
+      holder.html('');
+      addSpinner(holder.closest('.col-holder'));
+      $.getJSON(BASE_URL, { q: query, format: 'geojson' }, function (geojson) {
+        removeSpinner(holder.closest('.col-holder'));
+        var features = parseChoroplethMapChartData(geojson.features);
+        mapComponent(holder[0], {
+          useRobinsonProjection: true,
+          features: features,
+          getPolygonClassName: function (d) {
+            return d.color;
+          },
+          showTooltipCallback: function (d, x, y) {
+            if (d.name) {
+              tooltip.style("opacity", 1);
+              tooltip.html(d.name + "<br/>Number of visitors:  <strong>" + d.properties.count + "</strong><br/>")
+                .style("left", (x) + "px")
+                .style("top", (y - 30) + "px")
+                .style("transform", "translate(-50%, -50%)");
+            }
+          },
+          hideTooltipCallback: function () {
+            tooltip.style("opacity", 0);
+          }
+        })
+      });
+    });
+  }
+
   function initHighcharts() {
     $('.gender-donut-chart').each(function () {
       var holder = $(this);
@@ -653,32 +699,6 @@
           }
         });
       }.bind(this));
-    });
-    $('.map-chart').each(function () {
-      var query, params;
-      if (_state.filters.iso2) {
-        query = choroplethCountryQuery(_state.filters).trim();
-      } else if (_state.filters.funding_round) {
-        params = prefixFiltersForQuery('AND','', 'synthesys.synth_roun =');
-        query = choroplethFundingRoundQuery(params).trim();
-      } else {
-        params = prefixFiltersForQuery('AND', 'synthesys.discipline =', '');
-        query = choroplethQuery(params).trim();
-      }
-      var holder = $(this);
-      holder.html('');
-      addSpinner(holder.closest('.col-holder'));
-      $.getJSON(BASE_URL, { q: query, format: 'geojson' }, function (geojson) {
-        removeSpinner(holder.closest('.col-holder'));
-        var features = parseChoroplethMapChartData(geojson.features);
-        mapComponent(holder[0], {
-          useRobinsonProjection: true,
-          features: features,
-          getPolygonClassName: function (data) {
-            return data.color;
-          }
-        })
-      });
     });
     $('.researcher-type-donut-chart').each(function () {
       var holder = $(this);
