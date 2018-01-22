@@ -1481,7 +1481,6 @@
         color: color
       };
     });
-    console.log(apiData);
     return apiData;
   }
 
