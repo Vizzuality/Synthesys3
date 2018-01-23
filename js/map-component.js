@@ -30,7 +30,7 @@ var mapComponent = (function () {
       getPolygonClassName = _ref.getPolygonClassName,
       showTooltipCallback = _ref.showTooltipCallback,
       hideTooltipCallback = _ref.hideTooltipCallback,
-      useRobinsonProjection = _ref.useRobinsonProjection;
+      customProjection = _ref.customProjection;
 
     var d3Container = d3.select(className);
     var containerComputedStyle = window.getComputedStyle(d3Container.node());
@@ -42,7 +42,7 @@ var mapComponent = (function () {
     var geoParent = svg.append('g');
     var container = geoParent.append('g');
 
-    var projection = useRobinsonProjection === true ? d3.geo.robinson() : d3.geo.mercator();
+    var projection = customProjection ? d3.geo[customProjection]() : d3.geo.mercator();
     var path = d3.geo.path().projection(projection);
 
     var polygons = container.selectAll('path')

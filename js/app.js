@@ -478,11 +478,9 @@
       } else if (_state.filters.funding_round) {
         params = prefixFiltersForQuery('WHERE','', 'synth_roun =');
         query = choroplethParamsQuery(Object.assign({}, params, { count: 'synth_roun' })).trim();
-        console.log(query);
       } else if (_state.filters.discipline) {
         params = prefixFiltersForQuery('WHERE', 'discipline =', '');
         query = choroplethParamsQuery(Object.assign({}, params, { count: 'discipline' })).trim();
-        console.log(query);
       } else {
         query = choroplethQuery().trim();
       }
@@ -493,7 +491,7 @@
         removeSpinner(holder.closest('.col-holder'));
         var features = parseChoroplethMapChartData(geojson.features);
         mapComponent(holder[0], {
-          useRobinsonProjection: true,
+          customProjection: 'conicConformal',
           features: features,
           getPolygonClassName: function (d) {
             return d.color;
@@ -1576,7 +1574,6 @@
     };
 
     return polygons.map(function (polygon) {
-      console.log(polygon);
       const country = getSelectedCountry(ISO2_TO_ISO[polygon.properties.iso]);
       var result = Object.assign({}, polygon, { color: getColor(polygon.properties.count), name: country && country.label });
       if (result.properties.count === 0) result.properties.count = 'N/A';
