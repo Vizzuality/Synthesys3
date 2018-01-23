@@ -5,28 +5,39 @@ var choroplethCountryQuery = _.template('WITH gadm28 as (SELECT cartodb_id, the_
   ' GROUP BY gadm28.cartodb_id, gadm28.the_geom, synthesys.discipline'
 );
 
-var choroplethFundingRoundQuery = _.template('WITH gadm28 AS (SELECT cartodb_id, the_geom, iso2 as iso FROM  gadm28_countries' +
-  ' WHERE gadm28_countries.iso2  NOT IN (\'GF\', \'RU\', \'SJ\')' +
-  ' AND gadm28_countries.unregion2 = \'Europe\')' +
-  ' SELECT gadm28.cartodb_id, gadm28.the_geom, gadm28.iso, synthesys.discipline, COUNT(synthesys.home_insti) AS count' +
-  ' FROM  sanitized_data AS synthesys RIGHT JOIN gadm28' +
-  ' ON ST_Intersects(gadm28.the_geom, synthesys.the_geom)' +
-  ' AND synthesys.discipline IS NOT null' +
-  ' <%= funding_round %>' +
-  ' GROUP BY gadm28.cartodb_id, gadm28.the_geom, synthesys.discipline, gadm28.iso');
+var choroplethQuery = _.template('WITH gadm28 AS (SELECT cartodb_id, unregion2, the_geom, the_geom_webmercator, iso2 as iso ' +
+  ' FROM  gadm28_countries ' +
+  ' WHERE gadm28_countries.iso2 ' +
+  ' NOT IN (\'GF\', \'RU\', \'SJ\') ' +
+  ' AND gadm28_countries.unregion2 = \'Europe\'),' +
+  ' d as (SELECT gadm28.cartodb_id, gadm28.the_geom, gadm28.the_geom_webmercator, gadm28.iso,' +
+  ' synthesys.discipline, synthesys.home_insti' +
+  ' FROM sanitized_data AS synthesys' +
+  ' RIGHT JOIN gadm28 ON ST_Intersects(gadm28.the_geom_webmercator,' +
+  ' synthesys.the_geom_webmercator))' +
+  ' select count(iso), iso, the_geom, the_geom_webmercator, row_number() over () as cartodb_id' +
+  ' from d group by iso, the_geom, the_geom_webmercator order by 1 desc'
+);
 
-var choroplethQuery = _.template('WITH gadm28 AS (SELECT cartodb_id, unregion2, the_geom, the_geom_webmercator, iso2 as iso' +
+var choroplethParamsQuery = _.template('WITH gadm28 AS (SELECT cartodb_id, unregion2, the_geom, the_geom_webmercator, iso2 as iso' +
   ' FROM  gadm28_countries' +
   ' WHERE gadm28_countries.iso2' +
   ' NOT IN (\'GF\', \'RU\', \'SJ\')' +
-  ' AND gadm28_countries.unregion2 = \'Europe\')' +
+  ' AND gadm28_countries.unregion2 = \'Europe\'),' +
+  ' synthesys as (select * from sanitized_data' +
+  ' <%= discipline %>' +
+  ' <%= funding_round %>' +
+  ' ),' +
   ' d as (SELECT gadm28.cartodb_id, gadm28.the_geom, gadm28.the_geom_webmercator, gadm28.iso,' +
-  ' synthesys.discipline, synthesys.home_inst' +
-  ' FROM sanitized_data AS synthesy' +
+  ' synthesys.discipline, synthesys.synth_roun, synthesys.home_insti' +
+  ' FROM synthesys' +
   ' RIGHT JOIN gadm28 ON ST_Intersects(gadm28.the_geom_webmercator,' +
-  ' synthesys.the_geom_webmercator)' +
-  ' select count(iso), iso, the_geom, the_geom_webmercator, row_number() over () as cartodb_id' +
-  ' from d group by iso, the_geom, the_geom_webmercator order by 1 desc'
+  ' synthesys.the_geom_webmercator))' +
+  ' select count(' +
+  ' <%= count %>' +
+  '), iso, the_geom, the_geom_webmercator, row_number() over () as cartodb_id' +
+  ' FROM d' +
+  ' group by iso, the_geom, the_geom_webmercator'
 );
 
 var genderCountryPieChartQuery = _.template('WITH gadm28 AS (SELECT the_geom_webmercator, iso2 FROM  gadm28_countries WHERE iso2 = \'<%= iso2 %>\')' +

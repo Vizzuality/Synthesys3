@@ -476,11 +476,15 @@
       if (_state.filters.iso2) {
         query = choroplethCountryQuery(_state.filters).trim();
       } else if (_state.filters.funding_round) {
-        params = prefixFiltersForQuery('AND','', 'synthesys.synth_roun =');
-        query = choroplethFundingRoundQuery(params).trim();
+        params = prefixFiltersForQuery('WHERE','', 'synth_roun =');
+        query = choroplethParamsQuery(Object.assign({}, params, { count: 'synth_roun' })).trim();
+        console.log(query);
+      } else if (_state.filters.discipline) {
+        params = prefixFiltersForQuery('WHERE', 'discipline =', '');
+        query = choroplethParamsQuery(Object.assign({}, params, { count: 'discipline' })).trim();
+        console.log(query);
       } else {
-        params = prefixFiltersForQuery('AND', 'synthesys.discipline =', '');
-        query = choroplethQuery(params).trim();
+        query = choroplethQuery().trim();
       }
       var holder = $(this);
       holder.html('');
@@ -495,13 +499,12 @@
             return d.color;
           },
           showTooltipCallback: function (d, x, y) {
-            if (d.name) {
-              tooltip.style("opacity", 1);
-              tooltip.html(d.name + "<br/>Number of visitors:  <strong>" + d.properties.count + "</strong><br/>")
-                .style("left", (x) + "px")
-                .style("top", (y - 30) + "px")
-                .style("transform", "translate(-50%, -50%)");
-            }
+            var name = d.name ? (d.name + '<br/>') : '';
+            tooltip.style("opacity", 1);
+            tooltip.html(name + "Number of visitors:  <strong>" + d.properties.count + "</strong><br/>")
+              .style("left", (x) + "px")
+              .style("top", (y - 30) + "px")
+              .style("transform", "translate(-50%, -50%)");
           },
           hideTooltipCallback: function () {
             tooltip.style("opacity", 0);
@@ -1573,9 +1576,11 @@
     };
 
     return polygons.map(function (polygon) {
+      console.log(polygon);
       const country = getSelectedCountry(ISO2_TO_ISO[polygon.properties.iso]);
       var result = Object.assign({}, polygon, { color: getColor(polygon.properties.count), name: country && country.label });
       if (result.properties.count === 0) result.properties.count = 'N/A';
+
       return result;
     });
   }
