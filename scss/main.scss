@@ -334,17 +334,7 @@ body {
     text-decoration: underline;
     padding: 0 0 0 36px;
     margin: 0 0 0 -5px;
-    &:before {
-      content: '\f09b';
-      font-family: "fontello";
-      position: absolute;
-      left: 0;
-      top: 50%;
-      font-size: 30px;
-      line-height: 30px;
-      font-weight: 400;
-      transform: translateY(-50%);
-    }
+    
     &:hover {
       text-decoration: none;
     }
